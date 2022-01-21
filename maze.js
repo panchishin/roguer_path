@@ -429,44 +429,46 @@ function Game() {
 		zoom();
 	}
 
-	let actions = {
-		'ArrowLeft' : { desc : 'left' , funct: ()=>{this.moveTo(this.start_i,this.start_j-1); } },
-		'ArrowRight' : { desc : 'right' , funct : ()=>{this.moveTo(this.start_i,this.start_j+1); } },
-		'ArrowUp' : { desc : 'up' , funct : ()=>{this.moveTo(this.start_i-1,this.start_j); } },
-		'ArrowDown' : { desc : 'down' , funct : ()=>{this.moveTo(this.start_i+1,this.start_j); } },
-		'KeyN' : { funct: ()=>{ this.start(); } },
-		'KeyL' : { funct: ()=>{ this.light = !this.light; } },
-		'KeyU' : { funct: ()=>{ if (this.canMove) { this.upgrade(); this.start(); } } }
-	};
-
-	document.onkeydown = (e) => {
-		if (this.canMove && e.code in actions) {
-			actions[e.code].funct();
-			this.refresh();
-		}
-	};
-
-	// prevent window from scrolling when using the arrow functions
-	window.addEventListener("keydown", function(e) {
-		if (e.code in actions) {
-			e.preventDefault();
-		}
-	}, false);
-
 	this.incrementTimer = function() {
 		this.secondsPlayed++;
 		if (this.secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
-		if (this.secondsPlayed == 10) addMessage("10 seconds have passed since you began.");
-		if (this.secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute");
-		if (this.secondsPlayed == 60*5) addMessage("It's been 5 minutes and you are still here?");
-		if (this.secondsPlayed == 60*10) addAchievement("10 min of game time");
-		if (this.secondsPlayed == 60*30) addAchievement("30 min of game time");
-		if (this.secondsPlayed == 60*60) addAchievement("60 min of game time");
+		if (this.secondsPlayed == 10) this.addMessage("10 seconds have passed since you began.");
+		if (this.secondsPlayed == 60) this.addMessage("Wow, you've been playing for 1 minute");
+		if (this.secondsPlayed == 60*5) this.addMessage("It's been 5 minutes and you are still here?");
+		if (this.secondsPlayed == 60*10) this.addAchievement("10 min of game time");
+		if (this.secondsPlayed == 60*30) this.addAchievement("30 min of game time");
+		if (this.secondsPlayed == 60*60) this.addAchievement("60 min of game time");
 
-		document.getElementById("secondsplayed").innerHTML = secondsPlayed;
+		document.getElementById("secondsplayed").innerHTML = this.secondsPlayed;
 	}
 }
 
+
 let game = new Game();
-setInterval(game.incrementTimer,1000);
 game.start();
+
+let actions = {
+	'ArrowLeft' : { desc : 'left' , funct: ()=>{game.moveTo(game.start_i,game.start_j-1); } },
+	'ArrowRight' : { desc : 'right' , funct : ()=>{game.moveTo(game.start_i,game.start_j+1); } },
+	'ArrowUp' : { desc : 'up' , funct : ()=>{game.moveTo(game.start_i-1,game.start_j); } },
+	'ArrowDown' : { desc : 'down' , funct : ()=>{game.moveTo(game.start_i+1,game.start_j); } },
+	'KeyN' : { funct: ()=>{ game.start(); } },
+	'KeyL' : { funct: ()=>{ game.light = !game.light; } },
+	'KeyU' : { funct: ()=>{ if (game.canMove) { game.upgrade(); game.start(); } } }
+};
+
+document.onkeydown = (e) => {
+	if (game.canMove && e.code in actions) {
+		actions[e.code].funct();
+		game.refresh();
+	}
+};
+
+// prevent window from scrolling when using the arrow functions
+window.addEventListener("keydown", function(e) {
+	if (e.code in actions) {
+		e.preventDefault();
+	}
+}, false);
+
+setInterval(()=>{game.incrementTimer()},1000);
