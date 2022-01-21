@@ -1,3 +1,7 @@
+'use strict';
+
+import { randint, shuffle, assert } from './util.js';
+
 const WALL = "#";
 const SPACE = " ";
 const DOOR = "D";
@@ -7,7 +11,6 @@ const CHAMBER = ",";
 const EXIT = "E";
 const COIN = "c";
 const SLUG = "~";
-
 
 let start_i = 0;
 let start_j = 0;
@@ -35,8 +38,6 @@ let killsSlugs = 0;
 let deaths = 0;
 
 const MAX_MAZE_SIZE = 12;
-const MAX_DOORS = 2;
-const MAX_CHAMBERS = 10;
 const MAX_GOOD_THINGS = 3;
 const MAX_BAD_THINGS = 3;
 
@@ -119,38 +120,7 @@ function upgrade() {
 	}
 }
 
-// for (let x=0; x<50; x++) upgrade();
-
-function randint(lowerbound,upperbound) {
-	return Math.floor(Math.random() * (upperbound-lowerbound+1)) + lowerbound;
-}
-
-function shuffle(array) {
-	let currentIndex = array.length,  randomIndex;
-
-	// While there remain elements to shuffle...
-	while (currentIndex != 0) {
-
-		// Pick a remaining element...
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex--;
-
-		// And swap it with the current element.
-		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-	}
-
-	return array;
-}
-
-function assert(statement) {
-	if (!statement) {
-		var err = new Error();
-    	console.log(err.stack);
-		throw "Wrong!";
-	}
-}
-
-function illuminate(g, focus_i, focus_j, distance=3){
+function illuminate(g, focus_i, focus_j, distance=3) {
 	let n = g.length;
 	for (let i=-distance; i<=distance; i++) {
 		for (let j=-distance; j<=distance; j++) {
@@ -189,6 +159,7 @@ function maze(n, chambers=0, doors=0) {
 		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size);
 
 		for(let door=0; door<doors; door++) {
+			let i,j;
 			[i,j] = [randint(0,1)*(size+1)-1 , randint(0,Math.floor(size/2))*2];
 			if (randint(0,1) == 0) [i,j] = [j,i];
 			if (G[I+i][J+j] == WALL) {
@@ -242,11 +213,13 @@ function maze(n, chambers=0, doors=0) {
 
 	// place coins
 	for (let x=0; x<coins; x++) {
+		let I,J;
 		[I, J] = placeItem(SPACE, true)
 		G[I][J] = COIN;
 	}
 	// place slugs
 	for (let x=0; x<slugs; x++) {
+		let I,J;
 		[I, J] = placeItem(SPACE, true)
 		G[I][J] = SLUG;
 	}
@@ -433,7 +406,7 @@ function tunnelVisionIn(callback) {
 }
 
 function tunnelVisionOut(callback) {
-	maxTunnelVision = Math.floor(g.length);
+	let maxTunnelVision = Math.floor(g.length);
 	tunnelVision = 0
 	function zoom() {
 		if (tunnelVision < maxTunnelVision) {
@@ -489,3 +462,5 @@ function incrementTimer() {
 }
 
 setInterval(incrementTimer,1000);
+
+start();
