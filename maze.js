@@ -94,23 +94,23 @@ function upgrade() {
 		return;
 	}
 	if (coins < mazeSize - 4 && coins < MAX_GOOD_THINGS) {
-		coins += 1;
-		if (coins == 1) {
+		if (coins == 0) {
 			addAchievement("Unlocked Coins "+COIN)
 			addMessage("Coins may be laying about.");
 		} else {
 			addMessage("More coins to find.");
 		}
+		coins += 1;
 		return
 	}
 	if (slugs < coins && slugs < MAX_BAD_THINGS) {
-		slugs += 1;
-		if (slugs == 1) {
+		if (slugs == 0) {
 			addAchievement("Unlocked Slugs "+SLUG)
 			addMessage("Slugs "+SLUG+" may be lurking about.");
 		} else {
 			addMessage("More slugs.");
 		}
+		slugs += 1;
 		return
 	}
 	if (mazeSize < MAX_MAZE_SIZE) {
