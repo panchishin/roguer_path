@@ -20,14 +20,14 @@ function Game() {
 
 	this.start_i = 0;
 	this.start_j = 0;
-	this.light = true;
-	this.footprints = true;
-	this.canMove = false;
+	this.light = 1;
+	this.footprints = 1;
+	this.canMove = 0;
 	this.known;
 	this.mazeSize = 3;
 	this.numChambers = 0;
 	this.numDoors = 0;
-	this.g;
+	this.map;
 	this.tunnelVision = 1;
 
 	this.totalSteps = 0;
@@ -36,7 +36,7 @@ function Game() {
 	this.secondsPlayed = 0;
 	this.achievements = [];
 	this.messages = [];
-	this.enteredAChamber = false;
+	this.enteredAChamber = 0;
 	this.coins = 0;
 	this.slugs = 0;
 	this.inventoryCoins = 0;
@@ -92,8 +92,8 @@ function Game() {
 			return;
 		}
 		if (this.mazeSize >= 7 && this.light) {
-			this.light = false;
-			this.addAchievement("this.light is too easy. Exploration illuminates the dungeon");
+			this.light = 0;
+			this.addAchievement("Light is too easy. Exploration illuminates the dungeon");
 			return;
 		}
 		if (this.coins < this.mazeSize - 4 && this.coins < MAX_GOOD_THINGS) {
@@ -132,7 +132,7 @@ function Game() {
 					let J;
 					[I,J] = [focus_i+i, focus_j+j];
 					if (0<=I && I<n && 0<=J && J<n) {
-						this.known[I][J] = true;
+						this.known[I][J] = 1;
 					}
 				}
 			}
@@ -149,7 +149,7 @@ function Game() {
 		for (var i = 0; i < n; i++) G[i] = Array(n).fill(WALL);
 
 		this.known = Array(n);
-		for (var i = 0; i < n; i++) this.known[i] = Array(n).fill(false);
+		for (var i = 0; i < n; i++) this.known[i] = Array(n).fill(0);
 
 		function placeChamber() {
 			const size = 3;
@@ -217,13 +217,13 @@ function Game() {
 		// place coins
 		for (let x=0; x<this.coins; x++) {
 			let I,J;
-			[I, J] = placeItem(SPACE, true)
+			[I, J] = placeItem(SPACE, 1)
 			G[I][J] = COIN;
 		}
 		// place slugs
 		for (let x=0; x<this.slugs; x++) {
 			let I,J;
-			[I, J] = placeItem(SPACE, true)
+			[I, J] = placeItem(SPACE, 1)
 			G[I][J] = SLUG;
 		}
 		this.illuminate(G, iexit, jexit);
@@ -232,8 +232,8 @@ function Game() {
 	}
 
 	this.refresh = function(){
-		this.illuminate(this.g, this.start_i, this.start_j);
-		let n = this.g.length;
+		this.illuminate(this.map, this.start_i, this.start_j);
+		let n = this.map.length;
 		let text = [];
 		for (let i=0; i<n; i++) {
 			let line = []
@@ -243,29 +243,29 @@ function Game() {
 				} else if (i==this.start_i && j==this.start_j) {
 					line.push(HERO);
 				} else if (this.light || this.known[i][j]) {
-					line.push( this.g[i][j] );
+					line.push( this.map[i][j] );
 				} else {
 					line.push( " " );
 				}
 			}
 			text.push(line.join(""));
 		}
-		this.updateStat("maze",text.join("\n"),true);
+		this.updateStat("maze",text.join("\n"),1);
 	}
 
 	this.start = function(){
 		this.totalMaps++
-		this.updateStat("totalmaps",this.totalMaps,true);
+		this.updateStat("totalmaps",this.totalMaps,1);
 		this.updateStat("mazesize",this.mazeSize>=MAX_MAZE_SIZE?"max":this.mazeSize*2+1,this.mazeSize>5);
 		this.updateStat("numchambers",this.numChambers,this.numChambers > 0);
 		this.updateStat("numdoors",this.numDoors,this.numChambers > 1);
 
-		this.g = this.maze(this.mazeSize, this.numChambers, this.numDoors);
+		this.map = this.maze(this.mazeSize, this.numChambers, this.numDoors);
 
-		for (let i=this.g.length; i>0; i--) {
+		for (let i=this.map.length; i>0; i--) {
 			let row = []
-			for (let j=this.g.length; j>0; j--) {
-				row.push(false);
+			for (let j=this.map.length; j>0; j--) {
+				row.push(0);
 			}
 			this.known.push(row)
 		}
@@ -279,7 +279,7 @@ function Game() {
 		let n=this.mazeSize*2+1;
 		let I,J;
 		for ( [I, J] of shuffle([[i+1, j], [i-1, j], [i, j+1], [i, j-1]] ) ) {
-			if (0 <= I && I < n && 0 <= J && J < n && this.g[I][J] != WALL && this.g[I][J] != DOOR && this.g[I][J] != EXIT) {
+			if (0 <= I && I < n && 0 <= J && J < n && this.map[I][J] != WALL && this.map[I][J] != DOOR && this.map[I][J] != EXIT) {
 				let distance;
 				let move;
 				if (depth > 0) {
@@ -297,11 +297,11 @@ function Game() {
 	}
 
 	this.moveSlugs = function() {
-		this.canMove = false;
+		this.canMove = 0;
 		let n=this.mazeSize*2+1;
 		let slugLocations = []
 		for(let i=1; i<n; i++) for(let j=1; j<n-1; j++) {
-			if (this.g[i][j] == SLUG) {
+			if (this.map[i][j] == SLUG) {
 				slugLocations.push([i,j]);
 			}
 		}
@@ -312,17 +312,17 @@ function Game() {
 			let distance;
 			[move, distance] = this.slugAI(i,j,4);
 			if (move != null) {
-				this.g[i][j] = SPACE;
-				this.illuminate(this.g,i,j,0);
-				this.g[move[0]][move[1]] = SLUG;
-				this.illuminate(this.g,move[0],move[1],0);
+				this.map[i][j] = SPACE;
+				this.illuminate(this.map,i,j,0);
+				this.map[move[0]][move[1]] = SLUG;
+				this.illuminate(this.map,move[0],move[1],0);
 			}
 		}
-		this.canMove = true;
+		this.canMove = 1;
 	}
 
 	this.moveTo = function(i,j) {
-		if (0<=i && i<this.g.length && 0<=j && j<this.g.length && this.g[i][j] != WALL) {
+		if (0<=i && i<this.map.length && 0<=j && j<this.map.length && this.map[i][j] != WALL) {
 
 			this.totalSteps++;
 			if (this.totalSteps == 1) this.addAchievement("You discovered how to walk");
@@ -330,38 +330,38 @@ function Game() {
 			if (this.totalSteps == 250) this.addAchievement("250 steps");
 
 			this.updateStat("totalsteps",this.totalSteps,this.totalSteps>0);
-			if (this.g[this.start_i][this.start_j] == SPACE && this.footprints) {
-				this.g[this.start_i][this.start_j] = STEPS;
+			if (this.map[this.start_i][this.start_j] == SPACE && this.footprints) {
+				this.map[this.start_i][this.start_j] = STEPS;
 			}
-			if (this.g[this.start_i][this.start_j] != CHAMBER && this.g[i][j] == CHAMBER) {
+			if (this.map[this.start_i][this.start_j] != CHAMBER && this.map[i][j] == CHAMBER) {
 				if (!this.enteredAChamber) {
 					this.addAchievement("Explored first chamber")
-					this.enteredAChamber = true;
+					this.enteredAChamber = 1;
 				}
 				document.getElementById("maze").classList.add("danger");
 			}
-			if (this.g[this.start_i][this.start_j] == CHAMBER && this.g[i][j] != CHAMBER) {
+			if (this.map[this.start_i][this.start_j] == CHAMBER && this.map[i][j] != CHAMBER) {
 				document.getElementById("maze").classList.remove("danger");
 			}
 			[this.start_i,this.start_j] = [i,j]
-			if (this.g[this.start_i][this.start_j] == CHAMBER) this.moveSlugs();
+			if (this.map[this.start_i][this.start_j] == CHAMBER) this.moveSlugs();
 
-			if (this.g[this.start_i][this.start_j] == COIN) {
+			if (this.map[this.start_i][this.start_j] == COIN) {
 				this.inventoryCoins++;
-				this.g[this.start_i][this.start_j] = STEPS;
-				this.updateStat("inventoryCoins",this.inventoryCoins,true)
+				this.map[this.start_i][this.start_j] = STEPS;
+				this.updateStat("inventoryCoins",this.inventoryCoins,1)
 				if (this.inventoryCoins == 1) this.addAchievement("Coins");
 			}
 
-			if (this.g[this.start_i][this.start_j] == SLUG) {
+			if (this.map[this.start_i][this.start_j] == SLUG) {
 				if (randint(1,6)==6) {
 					// adventurer death
 					if (this.inventoryCoins>0){
 						this.inventoryCoins = 0;
-						this.updateStat("inventoryCoins",this.inventoryCoins,true);
+						this.updateStat("inventoryCoins",this.inventoryCoins,1);
 					}
 					this.deaths++;
-					this.updateStat("deaths",this.deaths,true);
+					this.updateStat("deaths",this.deaths,1);
 					if (this.deaths==1) this.addAchievement("First death by slug");
 					else this.addMessage("Death");
 					this.mazeSize = Math.max(5,this.mazeSize-1);
@@ -376,12 +376,12 @@ function Game() {
 					else if (this.killsSlugs == 5) this.addAchievement("Fifth slug kill");
 					else if (this.killsSlugs == 10) this.addAchievement("Tenth slug kill");
 					else this.addMessage("The dungeon slug as been squished");
-					this.g[this.start_i][this.start_j] = STEPS;
-					this.updateStat("killsSlugs",this.killsSlugs,true);
+					this.map[this.start_i][this.start_j] = STEPS;
+					this.updateStat("killsSlugs",this.killsSlugs,1);
 				}
 			}
 
-			if (this.g[this.start_i][this.start_j] == EXIT) {
+			if (this.map[this.start_i][this.start_j] == EXIT) {
 				this.totalExits++;
 				if (this.totalExits == 1) this.addAchievement("First exit found")
 				this.updateStat("totalexits",this.totalExits,this.totalExits>0);
@@ -393,9 +393,9 @@ function Game() {
 
 	this.tunnelVisionIn = function(callback) {
 		const that = this;
-		this.canMove = false;
+		this.canMove = 0;
 		document.getElementById("maze").classList.add("paused");
-		this.tunnelVision = Math.floor(this.g.length);
+		this.tunnelVision = Math.floor(this.map.length);
 		function zoom() {
 			if (that.tunnelVision > 1) {
 				that.tunnelVision *= 0.8;
@@ -411,7 +411,7 @@ function Game() {
 
 	this.tunnelVisionOut = function(callback) {
 		const that = this;
-		let maxTunnelVision = Math.floor(this.g.length);
+		let maxTunnelVision = Math.floor(this.map.length);
 		this.tunnelVision = 0
 		function zoom() {
 			if (that.tunnelVision < maxTunnelVision) {
@@ -420,8 +420,8 @@ function Game() {
 				that.refresh();
 				setTimeout(zoom, 100);
 			} else {
-				that.tunnelVision = that.g.length*2;
-				that.canMove = true;
+				that.tunnelVision = that.map.length*2;
+				that.canMove = 1;
 				document.getElementById("maze").classList.remove("paused");
 				callback()
 			}
@@ -443,22 +443,35 @@ function Game() {
 	}
 }
 
-
 let game = new Game();
-game.start();
+try {
+	let previous_save = JSON.parse(localStorage.getItem("game"));
+	for( let key of Object.keys(previous_save) ) {
+		game[key] = previous_save[key]; 
+		// console.log("key " + key + " set to " + previous_save[key])
+	}
+	game.refresh();
+} catch (e) {
+	console.log(e)
+	game = new Game();
+	game.start();
+}
 
 let actions = {
 	'ArrowLeft' : { desc : 'left' , funct: ()=>{game.moveTo(game.start_i,game.start_j-1); } },
 	'ArrowRight' : { desc : 'right' , funct : ()=>{game.moveTo(game.start_i,game.start_j+1); } },
 	'ArrowUp' : { desc : 'up' , funct : ()=>{game.moveTo(game.start_i-1,game.start_j); } },
 	'ArrowDown' : { desc : 'down' , funct : ()=>{game.moveTo(game.start_i+1,game.start_j); } },
-	'KeyN' : { funct: ()=>{ game.start(); } },
-	'KeyL' : { funct: ()=>{ game.light = !game.light; } },
-	'KeyU' : { funct: ()=>{ if (game.canMove) { game.upgrade(); game.start(); } } }
+	'KeyQ' : { desc : 'KeyQ' , funct: ()=>{ localStorage.clear("game"); game = new Game(); game.start(); } },
+	'KeyN' : { desc : 'KeyN' , funct: ()=>{ game.start(); } },
+	'KeyL' : { desc : 'KeyL' , funct: ()=>{ game.light = !game.light; } },
+	'KeyU' : { desc : 'KeyU' , funct: ()=>{ if (game.canMove) { game.upgrade(); game.start(); } } }
 };
 
 document.onkeydown = (e) => {
 	if (game.canMove && e.code in actions) {
+		console.log("Recieved user input of " + actions[e.code].desc)
+		localStorage.setItem("game",JSON.stringify(game));
 		actions[e.code].funct();
 		game.refresh();
 	}

@@ -86,7 +86,7 @@ fieldset > legend {
 #maze.paused { color: grey; }
 
 
-#stats div>span:nth-child(1) {
+.stats div>span:nth-child(1) {
     width: 8rem;
     display: inline-block;
     -webkit-animation: bounce .5s ease-out;
@@ -94,7 +94,7 @@ fieldset > legend {
     animation: bounce .5s ease-out;
 }
 
-#stats div>span:nth-child(2) {
+.stats div>span:nth-child(2) {
     width: 4rem;
     text-align: right;
     display: inline-block;
