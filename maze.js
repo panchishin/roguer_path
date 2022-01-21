@@ -470,7 +470,6 @@ let actions = {
 
 document.onkeydown = (e) => {
 	if (game.canMove && e.code in actions) {
-		console.log("Recieved user input of " + actions[e.code].desc)
 		localStorage.setItem("game",JSON.stringify(game));
 		actions[e.code].funct();
 		game.refresh();
