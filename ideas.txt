@@ -1,0 +1,50 @@
+
+collect stuff
+	gold, mystery energy, exits
+
+draw change cards
+	larger maze, larger corridors, more chambers, more doors,
+	enemies, limited torches, treasure, secret doors, traps,
+	improved combat, autopilot, lighting,
+	locks, 1st person view, analog movement, line-of-sight,
+	timer, multiple units
+
+graphics
+
+stats
+	steps taken, steps retraced, chambers explored,
+	doors passed, exits taken, autopilot steps taken,
+	total gold collected, left the map, time played
+
+autosave / reset / export / import
+
+caves vs buildings
+
+essence of
+	dungeon, wilderness, earth, air, fire, water, life, skills, magic, crafting, intelligence
+
+if idle
+	give usability hints on features the user hasn't exercised, like walking, toggling stats/map/log/achievements/help
+
+
+
+combat system
+	turn based means multiple attacks on 1 target and that 1 target has to choose how to respond
+	interaction based means each attack automatically gets a counter attack
+
+	gurps system : chance to hit, chance to parry (active/passive), armour points, hit locations, called shots etc
+	rune quest system : chance to hit, chance to parry/block/dodge, armour points, hit pts per location, range
+	talisiman system : contest of skill, few hitpoints, armour chance
+	dnd system : contest of skill vs armour, many hitpoints, surges, special moves
+
+	attack chance, attack damage, defence chance, defence damage
+	chance to hit = attack chance - defence chance w/ random
+	damage of hit = attack damage - defence damage w/ random
+
+	example : basic 1/1/0/0 vs basic 1/1/0/0 -> to hit = 1-0+rand(-c,c)>0 , damage = 1-0+rand(-d,d)
+	example : sword 2/4/1/0 vs chainmail 0/0/2/2 -> to hit = 1+2-2+rand(-c,c)>0 , damage = 1+4-2+rand(-d,d)
+	example : basic 1/1/0/0 vs agile 3/1/2/0 -> to hit = 1-2 , damage = 1-0
+
+	
+
+	
