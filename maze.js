@@ -374,7 +374,7 @@ function moveTo(i,j) {
 			inventoryCoins++;
 			g[start_i][start_j] = STEPS;
 			updateStat("inventoryCoins",inventoryCoins,true)
-			if (coins == 1) addAchievement("Coins");
+			if (inventoryCoins == 1) addAchievement("Coins");
 		}
 
 		if (g[start_i][start_j] == SLUG) {
