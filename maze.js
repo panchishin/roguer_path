@@ -12,37 +12,40 @@ const EXIT = "E";
 const COIN = "c";
 const SLUG = "~";
 
-let start_i = 0;
-let start_j = 0;
-let light = true;
-let footprints = true;
-let canMove = false;
-let known;
-let mazeSize = 3;
-let numChambers = 0;
-let numDoors = 0;
-let g;
-let tunnelVision = 1;
-
-let totalSteps = 0;
-let totalExits = 0;
-let totalMaps = 0;
-let secondsPlayed = 0;
-let achievements = [];
-let messages = [];
-let enteredAChamber = false;
-let coins = 0;
-let slugs = 0;
-let inventoryCoins = 0;
-let killsSlugs = 0;
-let deaths = 0;
-
 const MAX_MAZE_SIZE = 12;
 const MAX_GOOD_THINGS = 3;
 const MAX_BAD_THINGS = 3;
 
-function addMessage(message, cssclass=null) {
-	messages.unshift(message)
+function Game() {
+
+this.start_i = 0;
+this.start_j = 0;
+this.light = true;
+this.footprints = true;
+this.canMove = false;
+this.known;
+this.mazeSize = 3;
+this.numChambers = 0;
+this.numDoors = 0;
+this.g;
+this.tunnelVision = 1;
+
+this.totalSteps = 0;
+this.totalExits = 0;
+this.totalMaps = 0;
+this.secondsPlayed = 0;
+this.achievements = [];
+this.messages = [];
+this.enteredAChamber = false;
+this.coins = 0;
+this.slugs = 0;
+this.inventoryCoins = 0;
+this.killsSlugs = 0;
+this.deaths = 0;
+
+
+this.addMessage = function(message, cssclass=null) {
+	this.messages.unshift(message)
 	let span = document.createElement("span");
 	span.innerHTML = message;
 	if (cssclass != null) span.classList.add(cssclass)
@@ -55,72 +58,72 @@ function addMessage(message, cssclass=null) {
 	}
 }
 
-function addAchievement(message) {
-	addMessage("Achievement : " + message + "!", "achievements");
-	achievements.unshift(message);
-	updateStat("achievements",achievements.length,achievements.length>0);
+this.addAchievement = function(message) {
+	this.addMessage("Achievement : " + message + "!", "achievements");
+	this.achievements.unshift(message);
+	this.updateStat("achievements",this.achievements.length,this.achievements.length>0);
 }
 
-function updateStat(statName, statValue, display) {
+this.updateStat = function(statName, statValue, display) {
 	if (display) {
 		document.getElementById(statName).parentElement.classList.remove("hidden");
 	}
 	document.getElementById(statName).innerHTML = statValue;
 }
 
-function upgrade() {
-	if (numChambers < mazeSize - 5) {
-		numChambers += 1;
-		if (numChambers == 1) {
-			addMessage("Dungeons can now have a chamber.");
+this.upgrade = function() {
+	if (this.numChambers < this.mazeSize - 5) {
+		this.numChambers += 1;
+		if (this.numChambers == 1) {
+			this.addMessage("Dungeons can now have a chamber.");
 		} else {
-			addMessage("Dungeons now have " + numChambers + " chambers.");
+			this.addMessage("Dungeons now have " + this.numChambers + " chambers.");
 		}
 		return
 	}
-	if (numChambers >= 1 && numDoors == 0) {
-		numDoors = 1;
-		addMessage("Chambers can now have a door (marked with a '"+DOOR+"').");
+	if (this.numChambers >= 1 && this.numDoors == 0) {
+		this.numDoors = 1;
+		this.addMessage("Chambers can now have a door (marked with a '"+DOOR+"').");
 		return;
 	} 
-	if (numChambers >= 3 && numDoors == 1) {
-		numDoors = 2;
-		addMessage("Chambers can now have 2 doors.");
+	if (this.numChambers >= 3 && this.numDoors == 1) {
+		this.numDoors = 2;
+		this.addMessage("Chambers can now have 2 doors.");
 		return;
 	}
-	if (mazeSize >= 7 && light) {
-		light = false;
-		addAchievement("Light is too easy. Exploration illuminates the dungeon");
+	if (this.mazeSize >= 7 && this.light) {
+		this.light = false;
+		this.addAchievement("this.light is too easy. Exploration illuminates the dungeon");
 		return;
 	}
-	if (coins < mazeSize - 4 && coins < MAX_GOOD_THINGS) {
-		if (coins == 0) {
-			addAchievement("Unlocked Coins "+COIN)
-			addMessage("Coins may be laying about.");
+	if (this.coins < this.mazeSize - 4 && this.coins < MAX_GOOD_THINGS) {
+		if (this.coins == 0) {
+			this.addAchievement("Unlocked Coins "+COIN)
+			this.addMessage("Coins may be laying about.");
 		} else {
-			addMessage("More coins to find.");
+			this.addMessage("More coins to find.");
 		}
-		coins += 1;
+		this.coins += 1;
 		return
 	}
-	if (slugs < coins && slugs < MAX_BAD_THINGS) {
-		if (slugs == 0) {
-			addAchievement("Unlocked Slugs "+SLUG)
-			addMessage("Slugs "+SLUG+" may be lurking about.");
+	if (this.slugs < this.coins && this.slugs < MAX_BAD_THINGS) {
+		if (this.slugs == 0) {
+			this.addAchievement("Unlocked Slugs "+SLUG)
+			this.addMessage("Slugs "+SLUG+" may be lurking about.");
 		} else {
-			addMessage("More slugs.");
+			this.addMessage("More slugs.");
 		}
-		slugs += 1;
+		this.slugs += 1;
 		return
 	}
-	if (mazeSize < MAX_MAZE_SIZE) {
-		mazeSize += 1;
-		addMessage("Dungeons have grown to size " + (mazeSize*2+1) + ".");
+	if (this.mazeSize < MAX_MAZE_SIZE) {
+		this.mazeSize += 1;
+		this.addMessage("Dungeons have grown to size " + (this.mazeSize*2+1) + ".");
 		return;
 	}
 }
 
-function illuminate(g, focus_i, focus_j, distance=3) {
+this.illuminate = function(g, focus_i, focus_j, distance=3) {
 	let n = g.length;
 	for (let i=-distance; i<=distance; i++) {
 		for (let j=-distance; j<=distance; j++) {
@@ -129,14 +132,15 @@ function illuminate(g, focus_i, focus_j, distance=3) {
 				let J;
 				[I,J] = [focus_i+i, focus_j+j];
 				if (0<=I && I<n && 0<=J && J<n) {
-					known[I][J] = true;
+					this.known[I][J] = true;
 				}
 			}
 		}
 	}
 }
 
-function maze(n, chambers=0, doors=0) {
+this.maze = function(n, chambers=0, doors=0) {
+	const that = this;
 	n = n*2+1
 
 	assert(n > 3 && n%2 == 1);
@@ -144,9 +148,8 @@ function maze(n, chambers=0, doors=0) {
 	var G = Array(n);
 	for (var i = 0; i < n; i++) G[i] = Array(n).fill(WALL);
 
-	known = Array(n);
-	for (var i = 0; i < n; i++) known[i] = Array(n).fill(false);
-
+	this.known = Array(n);
+	for (var i = 0; i < n; i++) this.known[i] = Array(n).fill(false);
 
 	function placeChamber() {
 		const size = 3;
@@ -156,7 +159,7 @@ function maze(n, chambers=0, doors=0) {
 		J += J%2==0 ? 1 : 0;
 
 		for(let i=0; i<size; i++) for(let j=0; j<size; j++) G[I+i][J+j] = CHAMBER;
-		illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size);
+		that.illuminate(G, I+Math.floor(size/2), J+Math.floor(size/2), size);
 
 		for(let door=0; door<doors; door++) {
 			let i,j;
@@ -183,8 +186,8 @@ function maze(n, chambers=0, doors=0) {
 		throw("This shouldn't happen");
 	}
 
-	[start_i, start_j] = placeItem(WALL)
-	G[start_i][start_j] = SPACE;
+	[this.start_i, this.start_j] = placeItem(WALL)
+	G[this.start_i][this.start_j] = SPACE;
 
 	let tmax = 0;
 	let iexit = 0;
@@ -193,13 +196,13 @@ function maze(n, chambers=0, doors=0) {
 	function DFS(i, j, t){
 		let I = 0, J = 0;
 		for ( [I, J] of shuffle([[i+2, j], [i-2, j], [i, j+2], [i, j-2]] ) ) {
-			if (0 <= I && I < n && 0 <= J && J < n) if ( (G[I][J] == WALL && G[(I+i)/2][(J+j)/2] == WALL) || (I==start_i && J==start_j)) {
+			if (0 <= I && I < n && 0 <= J && J < n) if ( (G[I][J] == WALL && G[(I+i)/2][(J+j)/2] == WALL) || (I==that.start_i && J==that.start_j)) {
 				G[I][J] = SPACE;
 				G[(I+i)/2][(J+j)/2] = SPACE;
-				if (t > tmax && (I!=start_i || J!=start_j) ) { 
+				if (t > tmax && (I!=that.start_i || J!=that.start_j) ) { 
 					[tmax, iexit, jexit] = [t, I, J];
 				}
-				if (I!=start_i || J!=start_j) {
+				if (I!=that.start_i || J!=that.start_j) {
 					DFS(I, J, t + 1);
 				}
 			}
@@ -208,81 +211,81 @@ function maze(n, chambers=0, doors=0) {
 
 	[iexit, jexit, tmax] = [1,1, 0];
 
-	DFS(start_i, start_j, 0);
+	DFS(this.start_i, this.start_j, 0);
 	G[iexit][jexit] = EXIT;
 
 	// place coins
-	for (let x=0; x<coins; x++) {
+	for (let x=0; x<this.coins; x++) {
 		let I,J;
 		[I, J] = placeItem(SPACE, true)
 		G[I][J] = COIN;
 	}
 	// place slugs
-	for (let x=0; x<slugs; x++) {
+	for (let x=0; x<this.slugs; x++) {
 		let I,J;
 		[I, J] = placeItem(SPACE, true)
 		G[I][J] = SLUG;
 	}
-	illuminate(G, iexit, jexit);
+	this.illuminate(G, iexit, jexit);
 	
 	return G;
 }
 
-function refresh(){
-	illuminate(g, start_i, start_j);
-	let n = g.length;
+this.refresh = function(){
+	this.illuminate(this.g, this.start_i, this.start_j);
+	let n = this.g.length;
 	let text = [];
 	for (let i=0; i<n; i++) {
 		let line = []
 		for (let j=0; j<n; j++) {
-			if ((start_i-i)**2 + (start_j-j)**2 > tunnelVision*tunnelVision) {
+			if ((this.start_i-i)**2 + (this.start_j-j)**2 > this.tunnelVision*this.tunnelVision) {
 				line.push( "?" );
-			} else if (i==start_i && j==start_j) {
+			} else if (i==this.start_i && j==this.start_j) {
 				line.push(HERO);
-			} else if (light || known[i][j]) {
-				line.push( g[i][j] );
+			} else if (this.light || this.known[i][j]) {
+				line.push( this.g[i][j] );
 			} else {
 				line.push( " " );
 			}
 		}
 		text.push(line.join(""));
 	}
-	updateStat("maze",text.join("\n"),true);
+	this.updateStat("maze",text.join("\n"),true);
 }
 
-function start(){
-	totalMaps++
-	updateStat("totalmaps",totalMaps,true);
-	updateStat("mazesize",mazeSize>=MAX_MAZE_SIZE?"max":mazeSize*2+1,mazeSize>5);
-	updateStat("numchambers",numChambers,numChambers > 0);
-	updateStat("numdoors",numDoors,numChambers > 1);
+this.start = function(){
+	this.totalMaps++
+	this.updateStat("totalmaps",this.totalMaps,true);
+	this.updateStat("mazesize",this.mazeSize>=MAX_MAZE_SIZE?"max":this.mazeSize*2+1,this.mazeSize>5);
+	this.updateStat("numchambers",this.numChambers,this.numChambers > 0);
+	this.updateStat("numdoors",this.numDoors,this.numChambers > 1);
 
-	g = maze(mazeSize, numChambers, numDoors);
+	this.g = this.maze(this.mazeSize, this.numChambers, this.numDoors);
 
-	for (let i=g.length; i>0; i--) {
+	for (let i=this.g.length; i>0; i--) {
 		let row = []
-		for (let j=g.length; j>0; j--) {
+		for (let j=this.g.length; j>0; j--) {
 			row.push(false);
 		}
-		known.push(row)
+		this.known.push(row)
 	}
 	document.getElementById("maze").classList.remove("danger");
-	tunnelVisionOut(refresh);
+	this.tunnelVisionOut(()=>{this.refresh();});
 };
 
-function slugAI(i,j,depth) {
+this.slugAI = function(i,j,depth) {
 	let best_move = null;
 	let best_distance = 100000;
-	let n=mazeSize*2+1;
+	let n=this.mazeSize*2+1;
 	let I,J;
 	for ( [I, J] of shuffle([[i+1, j], [i-1, j], [i, j+1], [i, j-1]] ) ) {
-		if (0 <= I && I < n && 0 <= J && J < n && g[I][J] != WALL && g[I][J] != DOOR && g[I][J] != EXIT) {
+		if (0 <= I && I < n && 0 <= J && J < n && this.g[I][J] != WALL && this.g[I][J] != DOOR && this.g[I][J] != EXIT) {
 			let distance;
 			let move;
 			if (depth > 0) {
-				[move, distance] = slugAI(I,J,depth-1)
+				[move, distance] = this.slugAI(I,J,depth-1)
 			} else {
-				distance = (start_i-I)**2 + (start_j-J)**2;
+				distance = (this.start_i-I)**2 + (this.start_j-J)**2;
 			}
 			if (distance <= best_distance) {
 				best_move = [I,J];
@@ -293,12 +296,12 @@ function slugAI(i,j,depth) {
 	return [best_move, best_distance];
 }
 
-function moveSlugs() {
-	canMove = false;
-	let n=mazeSize*2+1;
+this.moveSlugs = function() {
+	this.canMove = false;
+	let n=this.mazeSize*2+1;
 	let slugLocations = []
 	for(let i=1; i<n; i++) for(let j=1; j<n-1; j++) {
-		if (g[i][j] == SLUG) {
+		if (this.g[i][j] == SLUG) {
 			slugLocations.push([i,j]);
 		}
 	}
@@ -307,96 +310,97 @@ function moveSlugs() {
 		[i,j] = loc;
 		let move;
 		let distance;
-		[move, distance] = slugAI(i,j,4);
+		[move, distance] = this.slugAI(i,j,4);
 		if (move != null) {
-			g[i][j] = SPACE;
-			illuminate(g,i,j,0);
-			g[move[0]][move[1]] = SLUG;
-			illuminate(g,move[0],move[1],0);
+			this.g[i][j] = SPACE;
+			this.illuminate(this.g,i,j,0);
+			this.g[move[0]][move[1]] = SLUG;
+			this.illuminate(this.g,move[0],move[1],0);
 		}
 	}
-	canMove = true;
+	this.canMove = true;
 }
 
-function moveTo(i,j) {
-	if (0<=i && i<g.length && 0<=j && j<g.length && g[i][j] != WALL) {
+this.moveTo = function(i,j) {
+	if (0<=i && i<this.g.length && 0<=j && j<this.g.length && this.g[i][j] != WALL) {
 
-		totalSteps++;
-		if (totalSteps == 1) addAchievement("You discovered how to walk");
-		if (totalSteps == 100) addAchievement("100 steps");
-		if (totalSteps == 250) addAchievement("250 steps");
+		this.totalSteps++;
+		if (this.totalSteps == 1) this.addAchievement("You discovered how to walk");
+		if (this.totalSteps == 100) this.addAchievement("100 steps");
+		if (this.totalSteps == 250) this.addAchievement("250 steps");
 
-		updateStat("totalsteps",totalSteps,totalSteps>0);
-		if (g[start_i][start_j] == SPACE && footprints) {
-			g[start_i][start_j] = STEPS;
+		this.updateStat("totalsteps",this.totalSteps,this.totalSteps>0);
+		if (this.g[this.start_i][this.start_j] == SPACE && this.footprints) {
+			this.g[this.start_i][this.start_j] = STEPS;
 		}
-		if (g[start_i][start_j] != CHAMBER && g[i][j] == CHAMBER) {
-			if (!enteredAChamber) {
-				addAchievement("Explored first chamber")
-				enteredAChamber = true;
+		if (this.g[this.start_i][this.start_j] != CHAMBER && this.g[i][j] == CHAMBER) {
+			if (!this.enteredAChamber) {
+				this.addAchievement("Explored first chamber")
+				this.enteredAChamber = true;
 			}
 			document.getElementById("maze").classList.add("danger");
 		}
-		if (g[start_i][start_j] == CHAMBER && g[i][j] != CHAMBER) {
+		if (this.g[this.start_i][this.start_j] == CHAMBER && this.g[i][j] != CHAMBER) {
 			document.getElementById("maze").classList.remove("danger");
 		}
-		[start_i,start_j] = [i,j]
-		if (g[start_i][start_j] == CHAMBER) moveSlugs();
+		[this.start_i,this.start_j] = [i,j]
+		if (this.g[this.start_i][this.start_j] == CHAMBER) this.moveSlugs();
 
-		if (g[start_i][start_j] == COIN) {
-			inventoryCoins++;
-			g[start_i][start_j] = STEPS;
-			updateStat("inventoryCoins",inventoryCoins,true)
-			if (inventoryCoins == 1) addAchievement("Coins");
+		if (this.g[this.start_i][this.start_j] == COIN) {
+			this.inventoryCoins++;
+			this.g[this.start_i][this.start_j] = STEPS;
+			this.updateStat("inventoryCoins",this.inventoryCoins,true)
+			if (this.inventoryCoins == 1) this.addAchievement("Coins");
 		}
 
-		if (g[start_i][start_j] == SLUG) {
+		if (this.g[this.start_i][this.start_j] == SLUG) {
 			if (randint(1,6)==6) {
 				// adventurer death
-				if (inventoryCoins>0){
-					inventoryCoins = 0;
-					updateStat("inventoryCoins",inventoryCoins,true);
+				if (this.inventoryCoins>0){
+					this.inventoryCoins = 0;
+					this.updateStat("inventoryCoins",this.inventoryCoins,true);
 				}
-				deaths++;
-				updateStat("deaths",deaths,true);
-				if (deaths==1) addAchievement("First death by slug");
-				else addMessage("Death");
-				mazeSize = Math.max(5,mazeSize-1);
-				slugs = Math.max(0,slugs-1);
-				coins = Math.max(0,coins-1);
-				numChambers = 0;
-				tunnelVisionIn(start);
+				this.deaths++;
+				this.updateStat("deaths",this.deaths,true);
+				if (this.deaths==1) this.addAchievement("First death by slug");
+				else this.addMessage("Death");
+				this.mazeSize = Math.max(5,this.mazeSize-1);
+				this.slugs = Math.max(0,this.slugs-1);
+				this.coins = Math.max(0,this.coins-1);
+				this.numChambers = 0;
+				this.tunnelVisionIn(()=>{this.start();});
 			} else {
 				// slug death
-				killsSlugs++;
-				if (killsSlugs == 1) addAchievement("First slug kill");
-				else if (killsSlugs == 5) addAchievement("Fifth slug kill");
-				else if (killsSlugs == 10) addAchievement("Tenth slug kill");
-				else addMessage("The dungeon slug as been squished");
-				g[start_i][start_j] = STEPS;
-				updateStat("killsSlugs",killsSlugs,true);
+				this.killsSlugs++;
+				if (this.killsSlugs == 1) this.addAchievement("First slug kill");
+				else if (this.killsSlugs == 5) this.addAchievement("Fifth slug kill");
+				else if (this.killsSlugs == 10) this.addAchievement("Tenth slug kill");
+				else this.addMessage("The dungeon slug as been squished");
+				this.g[this.start_i][this.start_j] = STEPS;
+				this.updateStat("killsSlugs",this.killsSlugs,true);
 			}
 		}
 
-		if (g[start_i][start_j] == EXIT) {
-			totalExits++;
-			if (totalExits == 1) addAchievement("First exit found")
-			updateStat("totalexits",totalExits,totalExits>0);
-			upgrade();
-			tunnelVisionIn(start);
+		if (this.g[this.start_i][this.start_j] == EXIT) {
+			this.totalExits++;
+			if (this.totalExits == 1) this.addAchievement("First exit found")
+			this.updateStat("totalexits",this.totalExits,this.totalExits>0);
+			this.upgrade();
+			this.tunnelVisionIn(()=>{this.start();});
 		}
 	}
 }
 
-function tunnelVisionIn(callback) {
-	canMove = false;
+this.tunnelVisionIn = function(callback) {
+	const that = this;
+	this.canMove = false;
 	document.getElementById("maze").classList.add("paused");
-	tunnelVision = Math.floor(g.length);
+	this.tunnelVision = Math.floor(this.g.length);
 	function zoom() {
-		if (tunnelVision > 1) {
-			tunnelVision *= 0.8;
-			tunnelVision -= 1;
-			refresh();
+		if (that.tunnelVision > 1) {
+			that.tunnelVision *= 0.8;
+			that.tunnelVision -= 1;
+			that.refresh();
 			setTimeout(zoom, 100);
 		} else {
 			callback()
@@ -405,18 +409,19 @@ function tunnelVisionIn(callback) {
 	zoom();
 }
 
-function tunnelVisionOut(callback) {
-	let maxTunnelVision = Math.floor(g.length);
-	tunnelVision = 0
+this.tunnelVisionOut = function(callback) {
+	const that = this;
+	let maxTunnelVision = Math.floor(this.g.length);
+	this.tunnelVision = 0
 	function zoom() {
-		if (tunnelVision < maxTunnelVision) {
-			tunnelVision += 1;
-			tunnelVision *= 1.2;
-			refresh();
+		if (that.tunnelVision < maxTunnelVision) {
+			that.tunnelVision += 1;
+			that.tunnelVision *= 1.2;
+			that.refresh();
 			setTimeout(zoom, 100);
 		} else {
-			tunnelVision = g.length*2;
-			canMove = true;
+			that.tunnelVision = that.g.length*2;
+			that.canMove = true;
 			document.getElementById("maze").classList.remove("paused");
 			callback()
 		}
@@ -425,19 +430,19 @@ function tunnelVisionOut(callback) {
 }
 
 let actions = {
-    'ArrowLeft' : { desc : 'left' , funct : function() {moveTo(start_i,start_j-1); } },
-    'ArrowRight' : { desc : 'right' , funct : function() { moveTo(start_i,start_j+1); } },
-    'ArrowUp' : { desc : 'up' , funct : function() { moveTo(start_i-1,start_j); } },
-    'ArrowDown' : { desc : 'down' , funct : function() { moveTo(start_i+1,start_j); } },
-	'KeyN' : { funct: function() { start(); } },
-	'KeyL' : { funct: function() { light = !light; } },
-	'KeyU' : { funct: function() { if (canMove) { upgrade(); start(); } } }
+    'ArrowLeft' : { desc : 'left' , funct: ()=>{this.moveTo(this.start_i,this.start_j-1); } },
+    'ArrowRight' : { desc : 'right' , funct : ()=>{this.moveTo(this.start_i,this.start_j+1); } },
+    'ArrowUp' : { desc : 'up' , funct : ()=>{this.moveTo(this.start_i-1,this.start_j); } },
+    'ArrowDown' : { desc : 'down' , funct : ()=>{this.moveTo(this.start_i+1,this.start_j); } },
+	'KeyN' : { funct: ()=>{ this.start(); } },
+	'KeyL' : { funct: ()=>{ this.light = !this.light; } },
+	'KeyU' : { funct: ()=>{ if (this.canMove) { this.upgrade(); this.start(); } } }
 };
 
 document.onkeydown = (e) => {
-	if (canMove && e.code in actions) {
+	if (this.canMove && e.code in actions) {
 		actions[e.code].funct();
-		refresh();
+		this.refresh();
 	}
 };
 
@@ -448,19 +453,22 @@ window.addEventListener("keydown", function(e) {
     }
 }, false);
 
-function incrementTimer() {
-	secondsPlayed++;
-	if (secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
-	if (secondsPlayed == 10) addMessage("10 seconds have passed since you began.");
-	if (secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute");
-	if (secondsPlayed == 60*5) addMessage("It's been 5 minutes and you are still here?");
-	if (secondsPlayed == 60*10) addAchievement("10 min of game time");
-	if (secondsPlayed == 60*30) addAchievement("30 min of game time");
-	if (secondsPlayed == 60*60) addAchievement("60 min of game time");
+this.incrementTimer = function() {
+	this.secondsPlayed++;
+	if (this.secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
+	if (this.secondsPlayed == 10) addMessage("10 seconds have passed since you began.");
+	if (this.secondsPlayed == 60) addMessage("Wow, you've been playing for 1 minute");
+	if (this.secondsPlayed == 60*5) addMessage("It's been 5 minutes and you are still here?");
+	if (this.secondsPlayed == 60*10) addAchievement("10 min of game time");
+	if (this.secondsPlayed == 60*30) addAchievement("30 min of game time");
+	if (this.secondsPlayed == 60*60) addAchievement("60 min of game time");
 
 	document.getElementById("secondsplayed").innerHTML = secondsPlayed;
 }
 
-setInterval(incrementTimer,1000);
 
-start();
+}
+
+let game = new Game();
+setInterval(game.incrementTimer,1000);
+game.start();
