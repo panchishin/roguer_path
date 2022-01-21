@@ -1,6 +1,10 @@
 # Roguer Path
 An indie rogue-like with exploration and simulation
 
+[Play the game here](https://panchishin.github.io/roguer_path/)
+
+
+
 ## Currently in 'prototype'
 Features include
  - Solvable maze generation
