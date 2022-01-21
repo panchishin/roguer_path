@@ -386,7 +386,8 @@ function moveTo(i,j) {
 				}
 				deaths++;
 				updateStat("deaths",deaths,true);
-				addMessage("Death");
+				if (deaths==1) addAchievement("First death by slug");
+				else addMessage("Death");
 				mazeSize = Math.max(5,mazeSize-1);
 				slugs = Math.max(0,slugs-1);
 				coins = Math.max(0,coins-1);
