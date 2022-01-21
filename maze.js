@@ -34,7 +34,7 @@ let inventoryCoins = 0;
 let killsSlugs = 0;
 let deaths = 0;
 
-const MAX_MAZE_SIZE = 13;
+const MAX_MAZE_SIZE = 12;
 const MAX_DOORS = 2;
 const MAX_CHAMBERS = 10;
 const MAX_GOOD_THINGS = 3;
@@ -446,45 +446,24 @@ function tunnelVisionOut(callback) {
 			document.getElementById("maze").classList.remove("paused");
 			callback()
 		}
-	}
+	};
 	zoom();
 }
 
 let actions = {
-    'ArrowLeft' : { desc : 'left' , 
-        funct : function() {
-			moveTo(start_i,start_j-1);
-        }
-    },
-    'ArrowRight' : { desc : 'right' , 
-        funct : function() { 
-			moveTo(start_i,start_j+1);
-        }
-    },
-    'ArrowUp' : { desc : 'up' , 
-        funct : function() { 
-			moveTo(start_i-1,start_j);
-        }
-    },
-    'ArrowDown' : { desc : 'down' , 
-        funct : function() { 
-			moveTo(start_i+1,start_j);
-        }
-    },
-	'KeyL' : { funct: function() { light = !light; }
-    },
-	'KeyU' : { funct: function() { if (canMove) {
-		if (mazeSize < 7) { addMessage("You found the Upgrade cheat!") }
-		upgrade(); start();
-	} } }
+    'ArrowLeft' : { desc : 'left' , funct : function() {moveTo(start_i,start_j-1); } },
+    'ArrowRight' : { desc : 'right' , funct : function() { moveTo(start_i,start_j+1); } },
+    'ArrowUp' : { desc : 'up' , funct : function() { moveTo(start_i-1,start_j); } },
+    'ArrowDown' : { desc : 'down' , funct : function() { moveTo(start_i+1,start_j); } },
+	'KeyN' : { funct: function() { start(); } },
+	'KeyL' : { funct: function() { light = !light; } },
+	'KeyU' : { funct: function() { if (canMove) { upgrade(); start(); } } }
 };
 
 document.onkeydown = (e) => {
-	if (canMove) {
-		if (e.code in actions) {
-			actions[e.code].funct();
-			refresh();
-		}
+	if (canMove && e.code in actions) {
+		actions[e.code].funct();
+		refresh();
 	}
 };
 
