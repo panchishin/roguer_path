@@ -297,10 +297,6 @@ function start(){
 	tunnelVisionOut(refresh);
 };
 
-document.getElementsByClassName("runsimulation")[0].onclick = () => {
-	if (canMove) { tunnelVisionIn(start) }
-}
-
 function slugAI(i,j,depth) {
 	let best_move = null;
 	let best_distance = 100000;
