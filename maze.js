@@ -9,7 +9,7 @@ const HERO = "@";
 const STEPS = ".";
 const CHAMBER = ",";
 const EXIT = "E";
-const COIN = "c";
+const ESSENCE_OF_WILL = "w";
 const SLUG = "~";
 
 const MAX_MAZE_SIZE = 12;
@@ -37,9 +37,9 @@ function Game() {
 	this.achievements = [];
 	this.messages = [];
 	this.enteredAChamber = 0;
-	this.coins = 0;
+	this.willpower_spawns = 0;
 	this.slugs = 0;
-	this.inventoryCoins = 0;
+	this.willpower_inventory = 0;
 	this.killsSlugs = 0;
 	this.deaths = 0;
 
@@ -96,19 +96,19 @@ function Game() {
 			this.addAchievement("Light is too easy. Exploration illuminates the dungeon");
 			return;
 		}
-		if (this.coins < this.mazeSize - 4 && this.coins < MAX_GOOD_THINGS) {
-			if (this.coins == 0) {
-				this.addAchievement("Unlocked Coins "+COIN)
-				this.addMessage("Coins may be laying about.");
+		if (this.willpower_spawns < this.mazeSize - 4 && this.willpower_spawns < MAX_GOOD_THINGS) {
+			if (this.willpower_spawns == 0) {
+				this.addAchievement("Unlocked Essence of willpower '"+ESSENCE_OF_WILL+"'")
+				this.addMessage("Essence of willpower may be laying about.");
 			} else {
-				this.addMessage("More coins to find.");
+				this.addMessage("More essence of willpower to find.");
 			}
-			this.coins += 1;
+			this.willpower_spawns += 1;
 			return
 		}
-		if (this.slugs < this.coins && this.slugs < MAX_BAD_THINGS) {
+		if (this.slugs < this.willpower_spawns && this.slugs < MAX_BAD_THINGS) {
 			if (this.slugs == 0) {
-				this.addAchievement("Unlocked Slugs "+SLUG)
+				this.addAchievement("Unlocked Slugs '"+SLUG+"'")
 				this.addMessage("Slugs "+SLUG+" may be lurking about.");
 			} else {
 				this.addMessage("More slugs.");
@@ -215,10 +215,10 @@ function Game() {
 		G[iexit][jexit] = EXIT;
 
 		// place coins
-		for (let x=0; x<this.coins; x++) {
+		for (let x=0; x<this.willpower_spawns; x++) {
 			let I,J;
 			[I, J] = placeItem(SPACE, 1)
-			G[I][J] = COIN;
+			G[I][J] = ESSENCE_OF_WILL;
 		}
 		// place slugs
 		for (let x=0; x<this.slugs; x++) {
@@ -325,9 +325,10 @@ function Game() {
 		if (0<=i && i<this.map.length && 0<=j && j<this.map.length && this.map[i][j] != WALL) {
 
 			this.totalSteps++;
-			if (this.totalSteps == 1) this.addAchievement("You discovered how to walk");
-			if (this.totalSteps == 100) this.addAchievement("100 steps");
-			if (this.totalSteps == 250) this.addAchievement("250 steps");
+			if (this.totalSteps == 1) this.addAchievement("The wisp has discovered how to move");
+			if (this.totalSteps == 10) this.addAchievement("The wisp has moved 10 times");
+			if (this.totalSteps == 100) this.addAchievement("The wisp has moved 100 times");
+			if (this.totalSteps == 250) this.addAchievement("The wisp has moved 250 times");
 
 			this.updateStat("totalsteps",this.totalSteps,this.totalSteps>0);
 			if (this.map[this.start_i][this.start_j] == SPACE && this.footprints) {
@@ -346,19 +347,19 @@ function Game() {
 			[this.start_i,this.start_j] = [i,j]
 			if (this.map[this.start_i][this.start_j] == CHAMBER) this.moveSlugs();
 
-			if (this.map[this.start_i][this.start_j] == COIN) {
-				this.inventoryCoins++;
+			if (this.map[this.start_i][this.start_j] == ESSENCE_OF_WILL) {
+				this.willpower_inventory++;
 				this.map[this.start_i][this.start_j] = STEPS;
-				this.updateStat("inventoryCoins",this.inventoryCoins,1)
-				if (this.inventoryCoins == 1) this.addAchievement("Coins");
+				this.updateStat("willpower_inventory",this.willpower_inventory,1)
+				if (this.willpower_inventory == 1) this.addAchievement("Willpower collected");
 			}
 
 			if (this.map[this.start_i][this.start_j] == SLUG) {
 				if (randint(1,6)==6) {
 					// adventurer death
-					if (this.inventoryCoins>0){
-						this.inventoryCoins = 0;
-						this.updateStat("inventoryCoins",this.inventoryCoins,1);
+					if (this.willpower_inventory>0){
+						this.willpower_inventory = 0;
+						this.updateStat("willpower_inventory",this.willpower_inventory,1);
 					}
 					this.deaths++;
 					this.updateStat("deaths",this.deaths,1);
@@ -366,7 +367,7 @@ function Game() {
 					else this.addMessage("Death");
 					this.mazeSize = Math.max(5,this.mazeSize-1);
 					this.slugs = Math.max(0,this.slugs-1);
-					this.coins = Math.max(0,this.coins-1);
+					this.willpower_spawns = Math.max(0,this.willpower_spawns-1);
 					this.numChambers = 0;
 					this.tunnelVisionIn(()=>{this.start();});
 				} else {
@@ -432,9 +433,9 @@ function Game() {
 	this.incrementTimer = function() {
 		this.secondsPlayed++;
 		if (this.secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
-		if (this.secondsPlayed == 10) this.addMessage("10 seconds have passed since you began.");
-		if (this.secondsPlayed == 60) this.addMessage("Wow, you've been playing for 1 minute");
-		if (this.secondsPlayed == 60*5) this.addMessage("It's been 5 minutes and you are still here?");
+		if (this.secondsPlayed == 10) this.addMessage("10 seconds have passed");
+		if (this.secondsPlayed == 60) this.addMessage("Wow, the wisp of willpower has existed for 1 minute");
+		if (this.secondsPlayed == 60*5) this.addMessage("It's been 5 minutes of existance");
 		if (this.secondsPlayed == 60*10) this.addAchievement("10 min of game time");
 		if (this.secondsPlayed == 60*30) this.addAchievement("30 min of game time");
 		if (this.secondsPlayed == 60*60) this.addAchievement("60 min of game time");
