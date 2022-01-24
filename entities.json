@@ -45,5 +45,17 @@
 		"possible_equipment":["stick","rock","sharp_stick","rabbit"],
 		"equipment":[],
 		"size":6
+	},
+
+	{
+		"species":"Human Zombie",
+		"description":"Zombified bipedal mammal.  Interests include brains.",
+		"strength":3,
+		"health":8,
+		"attributes":["bipedal","slow","undead"],
+		"possible_attributes":["short","tall","big","frail","scary","grotesque","abberant"],
+		"possible_equipment":["shovel","axe","hoe","rake","shoes"],
+		"equipment":["ripped clothing"],
+		"size":9
 	}
 ]
