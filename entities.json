@@ -12,6 +12,18 @@
 	},
 
 	{
+		"species":"Rat",
+		"description":"Pervasive rodent found anywhere there is easy food to scavange.",
+		"strength":1,
+		"health":2,
+		"attributes":["small","diseased"],
+		"possible_attributes":["grey","brown","black","rabbid","infected","silver"],
+		"possible_equipment":["bread","stick"],
+		"equipment":[],
+		"size":2
+	},
+
+	{
 		"species":"Human",
 		"description":"Sentient bipedal mammal.  Interests include farming, crafting, and war.  Likes to lie to friends and family.",
 		"strength":3,
