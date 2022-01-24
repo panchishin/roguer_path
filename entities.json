@@ -6,6 +6,7 @@
 		"health":1,
 		"attributes":["small","slow"],
 		"possible_equipment":[],
+		"equipment":[],
 		"size":1
 	},
 
@@ -17,6 +18,7 @@
 		"attributes":["sentient","bipedal"],
 		"possible_attributes":["short","tall","big","dumb","smart","frail","beautiful","scary"],
 		"possible_equipment":["shovel","axe","hoe","bucket","rake","spear","cart","firewood"],
+		"equipment":["clothing","shoes"],
 		"size":10
 	},
 
@@ -28,6 +30,7 @@
 		"attributes":["sentient","bipedal"],
 		"possible_attributes":["short","wide","dumb","smart","hary","muscular","scared","grumpy"],
 		"possible_equipment":["shovel","pickaxe","axe","bucket","hammer","cart","firewood"],
+		"equipment":["clothing","pipe"],
 		"size":8
 	},
 
@@ -39,6 +42,7 @@
 		"attributes":["sentient","bipedal"],
 		"possible_attributes":["green","red","emacated","hary","grotesque","deformed","aggitated"],
 		"possible_equipment":["stick","rock","sharp_stick","rabbit"],
+		"equipment":[],
 		"size":6
 	}
 ]
