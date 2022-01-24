@@ -5,6 +5,7 @@
 		"strength":1,
 		"health":1,
 		"attributes":["small","slow"],
+		"possible_attributes":["grey","brown","black","red","green","slimy","glowing"],
 		"possible_equipment":[],
 		"equipment":[],
 		"size":1
