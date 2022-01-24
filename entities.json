@@ -1,0 +1,44 @@
+[
+	{
+		"species":"Cave Slug",
+		"description":"Grey worm like thing.  Mostly harmess.",
+		"strength":1,
+		"health":1,
+		"attributes":["small","slow"],
+		"possible_equipment":[],
+		"size":1
+	},
+
+	{
+		"species":"Human",
+		"description":"Sentient bipedal mammal.  Interests include farming, crafting, and war.  Likes to lie to friends and family.",
+		"strength":3,
+		"health":10,
+		"attributes":["sentient","bipedal"],
+		"possible_attributes":["short","tall","big","dumb","smart","frail","beautiful","scary"],
+		"possible_equipment":["shovel","axe","hoe","bucket","rake","spear","cart","firewood"],
+		"size":10
+	},
+
+	{
+		"species":"Dwarf",
+		"description":"Sentient bipedal earth born.  Interests include mining, forging, and drinking.  Great mistrust of non-Dwarves.",
+		"strength":4,
+		"health":12,
+		"attributes":["sentient","bipedal"],
+		"possible_attributes":["short","wide","dumb","smart","hary","muscular","scared","grumpy"],
+		"possible_equipment":["shovel","pickaxe","axe","bucket","hammer","cart","firewood"],
+		"size":8
+	},
+
+	{
+		"species":"Goblin",
+		"description":"Sentient bipedal cave born.  Smelly and hunched.  Interests include killing, stealing, lurking, and reproducing.",
+		"strength":2,
+		"health":6,
+		"attributes":["sentient","bipedal"],
+		"possible_attributes":["green","red","emacated","hary","grotesque","deformed","aggitated"],
+		"possible_equipment":["stick","rock","sharp_stick","rabbit"],
+		"size":6
+	}
+]
