@@ -4,13 +4,13 @@ An indie rogue-like with exploration and simulation
 [Play the game here](https://panchishin.github.io/roguer_path/)
 
 
-
 ## Currently in 'prototype'
 Features include
+ - Save / Restore
  - Solvable maze generation
  - Achievements and Messages demo
  - Monster : slug (with AI)
- - Treasure : coin
+ - Treasure : willpower
  - Structures : chambers with doors
 
 ## Planned upcoming features
@@ -19,4 +19,9 @@ Features include
  - Zoom-in to tiles to show cave-like terrain
  - Combat info
  - Context info
- - Save / Restore
+
+## Change history
+[2022-01-28]
+ - slugs absorb willpower instead of killing wisp
+ - death is less likely but results in full reset
+ - stat updates result in shake

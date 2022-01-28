@@ -21,7 +21,7 @@ export function Game() {
 	this.reset = function() {
 		this.start_i = 0;
 		this.start_j = 0;
-		this.light = 1;
+		this.light = 0;
 		this.footprints = 1;
 		this.canMove = 0;
 		this.known;
@@ -67,7 +67,7 @@ export function Game() {
 	}
 
 	this.updateStat = function(statName, statValue, display) {
-
+		if ("v"+document.getElementById(statName).innerHTML == "v"+statValue) return;
 		if (display) {
 			document.getElementById(statName).parentElement.classList.remove("hidden");
 		}
@@ -444,13 +444,15 @@ export function Game() {
 
 	this.incrementTimer = function() {
 		this.secondsPlayed++;
-		if (this.secondsPlayed == 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
+		if (this.secondsPlayed >= 120) document.getElementById("secondsplayed").parentElement.classList.remove("hidden");
 		if (this.secondsPlayed == 10) this.addMessage("10 seconds have passed");
-		if (this.secondsPlayed == 60) this.addMessage("Wow, the wisp of willpower has existed for 1 minute");
-		if (this.secondsPlayed == 60*5) this.addMessage("It's been 5 minutes of existance");
-		if (this.secondsPlayed == 60*10) this.addAchievement("10 min of game time");
-		if (this.secondsPlayed == 60*30) this.addAchievement("30 min of game time");
-		if (this.secondsPlayed == 60*60) this.addAchievement("60 min of game time");
+		if (this.secondsPlayed == 60) this.addMessage("The wisp of willpower has existed for 1 minute");
+		if (this.secondsPlayed == 60*5) this.addMessage("5 minutes of existance");
+		if (this.secondsPlayed == 60*10) this.addAchievement("10 min of existance");
+		if (this.secondsPlayed == 60*30) this.addAchievement("30 min of existance");
+		if (this.secondsPlayed == 60*60) this.addAchievement("1 hour of existance");
+		if (this.secondsPlayed == 2*60*60) this.addAchievement("2 hour of existance");
+		if (this.secondsPlayed == 5*60*60) this.addAchievement("5 hour of existance");
 
 		document.getElementById("secondsplayed").innerHTML = this.secondsPlayed;
 	}
