@@ -7,7 +7,7 @@ const WALL = "#";
 const SPACE = " ";
 const DOOR = "D";
 const HERO = "@";
-const STEPS = ".";
+const STEPS = "·";
 const CHAMBER = ",";
 const EXIT = "E";
 const ESSENCE_OF_WILL = "w";
@@ -18,32 +18,33 @@ const MAX_GOOD_THINGS = 3;
 const MAX_BAD_THINGS = 3;
 
 export function Game() {
+	this.reset = function() {
+		this.start_i = 0;
+		this.start_j = 0;
+		this.light = 1;
+		this.footprints = 1;
+		this.canMove = 0;
+		this.known;
+		this.mazeSize = 2;
+		this.numChambers = 0;
+		this.numDoors = 0;
+		this.map;
+		this.tunnelVision = 1;
 
-	this.start_i = 0;
-	this.start_j = 0;
-	this.light = 1;
-	this.footprints = 1;
-	this.canMove = 0;
-	this.known;
-	this.mazeSize = 3;
-	this.numChambers = 0;
-	this.numDoors = 0;
-	this.map;
-	this.tunnelVision = 1;
-
-	this.totalSteps = 0;
-	this.totalExits = 0;
-	this.totalMaps = 0;
-	this.secondsPlayed = 0;
-	this.achievements = [];
-	this.messages = [];
-	this.enteredAChamber = 0;
-	this.willpower_spawns = 0;
-	this.slugs = 0;
-	this.willpower_inventory = 0;
-	this.killsSlugs = 0;
-	this.deaths = 0;
-
+		this.totalSteps = 0;
+		this.totalExits = 0;
+		this.totalMaps = 0;
+		this.secondsPlayed = 0;
+		this.achievements = [];
+		this.messages = [];
+		this.enteredAChamber = 0;
+		this.willpower_spawns = 0;
+		this.slugs = 0;
+		this.willpower_inventory = 0;
+		this.killsSlugs = 0;
+		this.deaths = 0;
+	}
+	this.reset();
 
 	this.addMessage = function(message, cssclass=null) {
 		this.messages.unshift(message)
@@ -66,8 +67,14 @@ export function Game() {
 	}
 
 	this.updateStat = function(statName, statValue, display) {
+
 		if (display) {
 			document.getElementById(statName).parentElement.classList.remove("hidden");
+		}
+		if (statName != "maze" && statName != "totalsteps" ) {
+			document.getElementById(statName).parentElement.classList.remove("shake");
+			document.getElementById(statName).parentElement.offsetWidth;
+			document.getElementById(statName).parentElement.classList.add("shake");
 		}
 		document.getElementById(statName).innerHTML = statValue;
 	}
@@ -356,28 +363,32 @@ export function Game() {
 			}
 
 			if (this.map[this.start_i][this.start_j] == SLUG) {
-				if (randint(1,6)==6) {
-					// adventurer death
+				if (randint(1,4)==4) {
+					// slug wins
 					if (this.willpower_inventory>0){
-						this.willpower_inventory = 0;
+						this.willpower_inventory -= 1;
 						this.updateStat("willpower_inventory",this.willpower_inventory,1);
+						this.addMessage("The slug absorbed some willpower");
+					} else {
+						this.deaths++;
+						this.updateStat("deaths",this.deaths,1);
+						this.addMessage("The slug absorbed the last essence of willpower");
+						if (this.deaths==1) this.addAchievement("First death");
+						else this.addMessage("Death");
+						this.mazeSize = Math.max(5,this.mazeSize-1);
+						let old_deaths = deaths;
+						
+						this.tunnelVisionIn(()=>{this.reset(); this.deaths=old_deaths; this.start();});
 					}
-					this.deaths++;
-					this.updateStat("deaths",this.deaths,1);
-					if (this.deaths==1) this.addAchievement("First death by slug");
-					else this.addMessage("Death");
-					this.mazeSize = Math.max(5,this.mazeSize-1);
-					this.slugs = Math.max(0,this.slugs-1);
-					this.willpower_spawns = Math.max(0,this.willpower_spawns-1);
-					this.numChambers = 0;
-					this.tunnelVisionIn(()=>{this.start();});
-				} else {
+				} else if (this.willpower_inventory>0){
 					// slug death
+					this.willpower_inventory -= 1;
+					this.updateStat("willpower_inventory",this.willpower_inventory,1);
 					this.killsSlugs++;
+					this.addMessage("The dungeon slug has been overpowered by sheer willpower");
 					if (this.killsSlugs == 1) this.addAchievement("First slug kill");
 					else if (this.killsSlugs == 5) this.addAchievement("Fifth slug kill");
 					else if (this.killsSlugs == 10) this.addAchievement("Tenth slug kill");
-					else this.addMessage("The dungeon slug as been squished");
 					this.map[this.start_i][this.start_j] = STEPS;
 					this.updateStat("killsSlugs",this.killsSlugs,1);
 				}

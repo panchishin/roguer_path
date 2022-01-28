@@ -89,9 +89,6 @@ fieldset > legend {
 .stats div>span:nth-child(1) {
     width: 8rem;
     display: inline-block;
-    -webkit-animation: bounce .5s ease-out;
-    -moz-animation: bounce .5s ease-out;
-    animation: bounce .5s ease-out;
 }
 
 .stats div>span:nth-child(2) {
@@ -99,10 +96,14 @@ fieldset > legend {
     text-align: right;
     display: inline-block;
     font-family: monospace;
+}
+
+.stats div.shake>span {
     -webkit-animation: bounce .5s ease-out;
     -moz-animation: bounce .5s ease-out;
     animation: bounce .5s ease-out;
 }
+
 
 #messagelog div {
     -webkit-animation: bounce .5s ease-out;
