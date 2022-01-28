@@ -1,4 +1,4 @@
-[
+export let bestiary = [
 	{
 		"id":0,
 		"species":"Willpower",

@@ -8,7 +8,6 @@ try {
 	let previous_save = JSON.parse(localStorage.getItem("game"));
 	for( let key of Object.keys(previous_save) ) {
 		game[key] = previous_save[key]; 
-		// console.log("key " + key + " set to " + previous_save[key])
 	}
 	game.refresh();
 } catch (e) {

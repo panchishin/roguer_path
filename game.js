@@ -1,6 +1,7 @@
 'use strict';
 
 import { randint, shuffle, assert } from './util.js';
+import { bestiary } from './bestiary.js';
 
 const WALL = "#";
 const SPACE = " ";
