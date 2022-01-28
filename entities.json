@@ -1,5 +1,19 @@
 [
 	{
+		"id":0,
+		"species":"Willpower",
+		"description":"Disembodied tendrils of agency. Interests include influencing and controlling things.  Likes to be in control and not controlled.",
+		"strength":0,
+		"health":1,
+		"attributes":["disembodied"],
+		"possible_attributes":[],
+		"possible_equipment":[],
+		"equipment":[],
+		"size":1
+	},
+
+	{
+		"id":1,
 		"species":"Cave Slug",
 		"description":"Grey worm like thing.  Mostly harmess.",
 		"strength":1,
@@ -12,6 +26,7 @@
 	},
 
 	{
+		"id":2,
 		"species":"Rat",
 		"description":"Pervasive rodent found anywhere there is easy food to scavange.",
 		"strength":1,
@@ -24,8 +39,9 @@
 	},
 
 	{
+		"id":3,
 		"species":"Human",
-		"description":"Sentient bipedal mammal.  Interests include farming, crafting, and war.  Likes to lie to friends and family.",
+		"description":"Sentient bipedal mammal. Interests include farming, crafting, and war. Likes to lie to friends and family.",
 		"strength":3,
 		"health":10,
 		"attributes":["sentient","bipedal"],
@@ -36,8 +52,9 @@
 	},
 
 	{
+		"id":4,
 		"species":"Dwarf",
-		"description":"Sentient bipedal earth born.  Interests include mining, forging, and drinking.  Great mistrust of non-Dwarves.",
+		"description":"Sentient bipedal earth born. Interests include mining, forging, and drinking. Great mistrust of non-Dwarves.",
 		"strength":4,
 		"health":12,
 		"attributes":["sentient","bipedal"],
@@ -48,8 +65,9 @@
 	},
 
 	{
+		"id":5,
 		"species":"Goblin",
-		"description":"Sentient bipedal cave born.  Smelly and hunched.  Interests include killing, stealing, lurking, and reproducing.",
+		"description":"Sentient bipedal cave born. Smelly and hunched. Interests include killing, stealing, lurking, and reproducing.",
 		"strength":2,
 		"health":6,
 		"attributes":["sentient","bipedal"],
@@ -60,8 +78,9 @@
 	},
 
 	{
-		"species":"Human Zombie",
-		"description":"Zombified bipedal mammal.  Interests include brains.",
+		"id":6,
+		"species":"Zombie",
+		"description":"Zombified bipedal mammal. Interests include brains. BraINs!",
 		"strength":3,
 		"health":8,
 		"attributes":["bipedal","slow","undead"],
