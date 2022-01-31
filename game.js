@@ -11,11 +11,10 @@ const STEPS = "·";
 const CHAMBER = ",";
 const EXIT = "E";
 const ESSENCE_OF_WILL = "w";
-const SLUG = "~";
 
 const MAX_MAZE_SIZE = 12;
-const MAX_GOOD_THINGS = 3;
-const MAX_BAD_THINGS = 3;
+const MAX_GOOD_THINGS = 5;
+const MAX_BAD_THINGS = 4;
 
 export function Game() {
 	this.reset = function() {
@@ -39,9 +38,9 @@ export function Game() {
 		this.messages = [];
 		this.enteredAChamber = 0;
 		this.willpower_spawns = 0;
-		this.slugs = 0;
+		this.bestiary_spawns = 0;
 		this.willpower_inventory = 0;
-		this.killsSlugs = 0;
+		this.bestiary_kills = 0;
 		this.deaths = 0;
 	}
 	this.reset();
@@ -114,14 +113,11 @@ export function Game() {
 			this.willpower_spawns += 1;
 			return
 		}
-		if (this.slugs < this.willpower_spawns && this.slugs < MAX_BAD_THINGS) {
-			if (this.slugs == 0) {
-				this.addAchievement("Unlocked Slugs '"+SLUG+"'")
-				this.addMessage("Slugs "+SLUG+" may be lurking about.");
-			} else {
-				this.addMessage("More slugs.");
-			}
-			this.slugs += 1;
+		if (this.bestiary_spawns < this.willpower_spawns && this.bestiary_spawns < MAX_BAD_THINGS) {
+			this.bestiary_spawns += 1;
+			let beast = bestiary[this.bestiary_spawns];
+			this.addAchievement("Unlocked "+beast.species+" '"+beast.icon+"'")
+			this.addMessage(beast.species+" '"+beast.icon+"' may be lurking about.");
 			return
 		}
 		if (this.mazeSize < MAX_MAZE_SIZE) {
@@ -228,11 +224,15 @@ export function Game() {
 			[I, J] = placeItem(SPACE, 1)
 			G[I][J] = ESSENCE_OF_WILL;
 		}
-		// place slugs
-		for (let x=0; x<this.slugs; x++) {
+		// place beasts
+		for (let x=0; x<this.bestiary_spawns; x++) {
 			let I,J;
 			[I, J] = placeItem(SPACE, 1)
-			G[I][J] = SLUG;
+			// if (x==0) {
+				G[I][J] = bestiary[Math.trunc(Math.random()*this.bestiary_spawns)+1].icon
+			// } else {
+				// G[I][J] = bestiary[1].icon
+			// }
 		}
 		this.illuminate(G, iexit, jexit);
 		
@@ -281,7 +281,7 @@ export function Game() {
 		this.tunnelVisionOut(()=>{this.refresh();});
 	};
 
-	this.slugAI = function(i,j,depth) {
+	this.beastAI = function(i,j,depth) {
 		let best_move = null;
 		let best_distance = 100000;
 		let n=this.mazeSize*2+1;
@@ -291,7 +291,7 @@ export function Game() {
 				let distance;
 				let move;
 				if (depth > 0) {
-					[move, distance] = this.slugAI(I,J,depth-1)
+					[move, distance] = this.beastAI(I,J,depth-1)
 				} else {
 					distance = (this.start_i-I)**2 + (this.start_j-J)**2;
 				}
@@ -304,25 +304,27 @@ export function Game() {
 		return [best_move, best_distance];
 	}
 
-	this.moveSlugs = function() {
+	this.moveBeasts = function() {
 		this.canMove = 0;
 		let n=this.mazeSize*2+1;
-		let slugLocations = []
+		let beastLocations = []
 		for(let i=1; i<n; i++) for(let j=1; j<n-1; j++) {
-			if (this.map[i][j] == SLUG) {
-				slugLocations.push([i,j]);
+			for(let b=1; b<=this.bestiary_spawns; b++){
+				if (this.map[i][j] == bestiary[b].icon) {
+					beastLocations.push([i,j,b]);
+				}
 			}
 		}
-		for(let loc of slugLocations) {
-			let i,j;
-			[i,j] = loc;
+		for(let loc of beastLocations) {
+			let i,j,b;
+			[i,j,b] = loc;
 			let move;
 			let distance;
-			[move, distance] = this.slugAI(i,j,4);
+			[move, distance] = this.beastAI(i,j,2+b*2);
 			if (move != null) {
 				this.map[i][j] = SPACE;
 				this.illuminate(this.map,i,j,0);
-				this.map[move[0]][move[1]] = SLUG;
+				this.map[move[0]][move[1]] = bestiary[b].icon;
 				this.illuminate(this.map,move[0],move[1],0);
 			}
 		}
@@ -353,7 +355,7 @@ export function Game() {
 				document.getElementById("maze").classList.remove("danger");
 			}
 			[this.start_i,this.start_j] = [i,j]
-			if (this.map[this.start_i][this.start_j] == CHAMBER) this.moveSlugs();
+			if (this.map[this.start_i][this.start_j] == CHAMBER) this.moveBeasts();
 
 			if (this.map[this.start_i][this.start_j] == ESSENCE_OF_WILL) {
 				this.willpower_inventory++;
@@ -362,17 +364,17 @@ export function Game() {
 				if (this.willpower_inventory == 1) this.addAchievement("Willpower collected");
 			}
 
-			if (this.map[this.start_i][this.start_j] == SLUG) {
+			for (let beast_id=1; beast_id <= this.bestiary_spawns; beast_id++)
+			if (this.map[this.start_i][this.start_j] == bestiary[beast_id].icon) {
 				if (randint(1,4)==4) {
-					// slug wins
 					if (this.willpower_inventory>0){
 						this.willpower_inventory -= 1;
 						this.updateStat("willpower_inventory",this.willpower_inventory,1);
-						this.addMessage("The slug absorbed some willpower");
+						this.addMessage("The "+bestiary[beast_id].species+" absorbed some willpower");
 					} else {
 						this.deaths++;
 						this.updateStat("deaths",this.deaths,1);
-						this.addMessage("The slug absorbed the last essence of willpower");
+						this.addMessage("The "+bestiary[beast_id].species+" absorbed the last essence of willpower")
 						if (this.deaths==1) this.addAchievement("First death");
 						else this.addMessage("Death");
 						this.mazeSize = Math.max(5,this.mazeSize-1);
@@ -381,16 +383,16 @@ export function Game() {
 						this.tunnelVisionIn(()=>{this.reset(); this.deaths=old_deaths; this.start();});
 					}
 				} else if (this.willpower_inventory>0){
-					// slug death
+					// beast death
 					this.willpower_inventory -= 1;
 					this.updateStat("willpower_inventory",this.willpower_inventory,1);
-					this.killsSlugs++;
-					this.addMessage("The dungeon slug has been overpowered by sheer willpower");
-					if (this.killsSlugs == 1) this.addAchievement("First slug kill");
-					else if (this.killsSlugs == 5) this.addAchievement("Fifth slug kill");
-					else if (this.killsSlugs == 10) this.addAchievement("Tenth slug kill");
+					this.bestiary_kills++;
+					this.addMessage("The "+bestiary[beast_id].species+" has been overpowered by sheer willpower");
+					if (this.bestiary_kills == 1) this.addAchievement("First beast kill");
+					else if (this.bestiary_kills == 5) this.addAchievement("Fifth beast kill");
+					else if (this.bestiary_kills == 10) this.addAchievement("Tenth beast kill");
 					this.map[this.start_i][this.start_j] = STEPS;
-					this.updateStat("killsSlugs",this.killsSlugs,1);
+					this.updateStat("killsSlugs",this.bestiary_kills,1);
 				}
 			}
 

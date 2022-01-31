@@ -2,6 +2,7 @@ export let bestiary = [
 	{
 		"id":0,
 		"species":"Willpower",
+		"icon":"@",
 		"description":"Disembodied tendrils of agency. Interests include influencing and controlling things.  Likes to be in control and not controlled.",
 		"strength":0,
 		"health":1,
@@ -15,6 +16,7 @@ export let bestiary = [
 	{
 		"id":1,
 		"species":"Cave Slug",
+		"icon":"~",
 		"description":"Grey worm like thing.  Mostly harmess.",
 		"strength":1,
 		"health":1,
@@ -28,6 +30,7 @@ export let bestiary = [
 	{
 		"id":2,
 		"species":"Rat",
+		"icon":"r",
 		"description":"Pervasive rodent found anywhere there is easy food to scavange.",
 		"strength":1,
 		"health":2,
@@ -41,6 +44,7 @@ export let bestiary = [
 	{
 		"id":3,
 		"species":"Human",
+		"icon":"h",
 		"description":"Sentient bipedal mammal. Interests include farming, crafting, and war. Likes to lie to friends and family.",
 		"strength":3,
 		"health":10,
@@ -54,6 +58,7 @@ export let bestiary = [
 	{
 		"id":4,
 		"species":"Dwarf",
+		"icon":"d",
 		"description":"Sentient bipedal earth born. Interests include mining, forging, and drinking. Great mistrust of non-Dwarves.",
 		"strength":4,
 		"health":12,
@@ -67,6 +72,7 @@ export let bestiary = [
 	{
 		"id":5,
 		"species":"Goblin",
+		"icon":"g",
 		"description":"Sentient bipedal cave born. Smelly and hunched. Interests include killing, stealing, lurking, and reproducing.",
 		"strength":2,
 		"health":6,
@@ -80,6 +86,7 @@ export let bestiary = [
 	{
 		"id":6,
 		"species":"Zombie",
+		"icon":"z",
 		"description":"Zombified bipedal mammal. Interests include brains. BraINs!",
 		"strength":3,
 		"health":8,
