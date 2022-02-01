@@ -74,16 +74,17 @@ fieldset > legend {
 -----------------------------------------------*/
 
 
-#maze {
-    letter-spacing: .4rem;
+.maze {
+    line-height: 1.1;
+    letter-spacing: .3rem;
     background-color: #1e1e1e;
     color: lawngreen;
     transition: color .15s ease-in-out;
     width: fit-content;
     padding: 0.4rem 0.2rem 0.4rem 0.6rem;
 }
-#maze.danger { color: orangered; }
-#maze.paused { color: grey; }
+.maze.danger { color: orangered; }
+.maze.paused { color: grey; }
 
 
 .stats div>span:nth-child(1) {
