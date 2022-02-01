@@ -6,8 +6,8 @@ let width=16*4, height=16;
 
 function noise() {
 	let cave = Array.from(Array(height), _ => Array(width).fill(0));
-	for (let h=0; h<height; h++) {
-		for (let w=0; w<width; w++) {
+	for (let w=0; w<width; w++) {
+		for (let h=0; h<height; h++) {
 			if ( Math.random() < Math.min(0.68, Math.sqrt(1.0 - Math.abs((height-1)/2.0-h)*2.0/height) )) {
 				cave[h][w] = 1;
 			}
@@ -53,8 +53,6 @@ function display() {
 	document.getElementById("maze1").innerHTML = print(cave);
 	cave = collapse(cave);
 	document.getElementById("maze2").innerHTML = print(cave);
-	cave = collapse(cave);
-	document.getElementById("maze3").innerHTML = print(cave);
 	duration = 10;
 }
 
