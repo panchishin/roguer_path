@@ -8,7 +8,7 @@ function noise() {
 	let cave = Array.from(Array(height), _ => Array(width).fill(0));
 	for (let h=0; h<height; h++) {
 		for (let w=0; w<width; w++) {
-			if ( Math.random() < Math.min(0.65, Math.sqrt(1.0 - Math.abs((height-1)/2.0-h)*2.0/height) )) {
+			if ( Math.random() < Math.min(0.68, Math.sqrt(1.0 - Math.abs((height-1)/2.0-h)*2.0/height) )) {
 				cave[h][w] = 1;
 			}
 		}
