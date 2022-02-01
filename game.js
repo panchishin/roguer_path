@@ -13,8 +13,8 @@ const EXIT = "E";
 const ESSENCE_OF_WILL = "w";
 
 const MAX_MAZE_SIZE = 12;
-const MAX_GOOD_THINGS = 5;
-const MAX_BAD_THINGS = 4;
+const MAX_GOOD_THINGS = 7;
+const MAX_BAD_THINGS = 6;
 
 export function Game() {
 	this.reset = function() {
@@ -118,6 +118,7 @@ export function Game() {
 			let beast = bestiary[this.bestiary_spawns];
 			this.addAchievement("Unlocked "+beast.species+" '"+beast.icon+"'")
 			this.addMessage(beast.species+" '"+beast.icon+"' may be lurking about.");
+			this.addMessage(beast.species+" - "+beast.description);
 			return
 		}
 		if (this.mazeSize < MAX_MAZE_SIZE) {
@@ -228,11 +229,11 @@ export function Game() {
 		for (let x=0; x<this.bestiary_spawns; x++) {
 			let I,J;
 			[I, J] = placeItem(SPACE, 1)
-			// if (x==0) {
+			if (x==0) {
+				G[I][J] = bestiary[1].icon
+			} else {
 				G[I][J] = bestiary[Math.trunc(Math.random()*this.bestiary_spawns)+1].icon
-			// } else {
-				// G[I][J] = bestiary[1].icon
-			// }
+			}
 		}
 		this.illuminate(G, iexit, jexit);
 		

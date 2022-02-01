@@ -48,3 +48,37 @@ combat system
 	
 
 	
+UPGRADES
+========
+
+wander - wander aimlessly when idle for a while
+seek willpower - "smell" bonus for willpower
+seek/avoid slugs - "smell" modifier for slugs
+seek exit - "smell" bonus for exit
+seek/avoid exploration - "smell" modifier for exploration
+
+Willpower Efficiency - increase willpower obtained from w by 1
+
+Extract Willpower from Life - extract willpower from life.  extract 1 willpower.  a gather skill
+Infuse Life with Willpower - infuse life with willpower.  inject 1 willpower. a spread skill
+
+Wonderlust - gain willpower through exploration - +1/100 new tiles explored.  a spread skill
+Meditation - gain willpower through inaction - +1/100 sec of not moving.  a gather skill
+
+spreading skills add bonus to spreading skills and negation to gather skills
+gather skills add bonus to gather skills and negation to spreading skills
+
+Spread senses - increase visibility. a spread skill
+Sharpen senses - increase zoom-in. a gather skill
+
+Diffuse over area - spread out, able to interact with more.  increases willpower loss / move.  increase area, slight decrease to willpower per area
+Concentrate in area - gather together, able to overwhelm the weak.  decreases willpower loss / move.  increase max willpower per area
+
+( get more willpower for the life doing what it likes to do )
+Possess Life - control the living.  a gather skill
+Influence Life - Influence the living. a spread skill
+
+Exit - control moving through exits
+Return - keep track of how to return
+
+
