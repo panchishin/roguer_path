@@ -17,7 +17,7 @@ export let bestiary = [
 		"id":1,
 		"species":"Cave Slug",
 		"icon":"~",
-		"description":"Grey worm like thing.  Mostly harmess.",
+		"description":"Worm like thing.  Mostly harmess.",
 		"strength":1,
 		"health":1,
 		"attributes":["small","slow"],
@@ -63,7 +63,7 @@ export let bestiary = [
 		"strength":4,
 		"health":12,
 		"attributes":["sentient","bipedal"],
-		"possible_attributes":["short","wide","dumb","smart","hary","muscular","scared","grumpy"],
+		"possible_attributes":["short","wide","dumb","smart","hary","muscular","scarred","grumpy"],
 		"possible_equipment":["shovel","pickaxe","axe","bucket","hammer","cart","firewood"],
 		"equipment":["clothing","pipe"],
 		"size":8
