@@ -1,0 +1,99 @@
+<html>
+<head>
+<style>
+body {
+      margin: 0;
+}
+</style>
+<body>
+</body>
+
+<script type='module'>
+import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js'
+
+
+var camera, scene, renderer;
+
+init();
+animate();
+
+function init() {
+
+    // camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    // camera.position.set(0,10,0);
+    const width = 8*Math.max(window.innerWidth,window.innerHeight)/window.innerHeight;
+    const height = 8*Math.max(window.innerHeight,window.innerWidth)/window.innerWidth;
+    const aspect = window.innerHeight / window.innerWidth;
+    camera = new THREE.OrthographicCamera( -width, width, height, -height, -10, 10 );
+    // camera.rotation.x = - Math.PI * 0.35;
+    // camera.rotation.z = - Math.PI * 0.0;
+
+    scene = new THREE.Scene();
+
+    var directionalLight = new THREE.DirectionalLight( 0x77ffff, 0.5 );
+    directionalLight.position.set(3,10,3);
+    directionalLight.castShadow = true;
+
+    //Set up shadow properties for the light
+    directionalLight.shadow.mapSize.width = 2*1024;  // default
+    directionalLight.shadow.mapSize.height = 2*1024; // default
+    directionalLight.shadow.camera.near = 0;    // default
+    directionalLight.shadow.camera.far = 100;     // default
+
+    const d = 10;
+
+    directionalLight.shadow.camera.left = - d;
+    directionalLight.shadow.camera.right = d;
+    directionalLight.shadow.camera.top = d;
+    directionalLight.shadow.camera.bottom = - d;
+    scene.add( directionalLight );
+
+
+    var light = new THREE.AmbientLight( 0x403050 ); // soft white light
+    scene.add( light );
+
+
+    let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    let material = new THREE.MeshStandardMaterial( { color: 0x918E85 } );
+
+    for(let x = -5; x <=5; x+= 2) for(let z = -5; z <=5; z+= 2) {
+
+        let mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+        mesh.position.set(x,0,z);
+        mesh.castShadow = true;
+    }
+
+    geometry = new THREE.BoxGeometry( 14, 1, 14 );
+
+    material = new THREE.MeshStandardMaterial( { color: 0x9b7653 } );
+    let mesh = new THREE.Mesh( geometry, material );
+
+
+    scene.add( mesh );
+    mesh.position.y += -1;
+    //mesh.position.z = -6;
+    mesh.receiveShadow = true;
+    camera.lookAt( mesh.position );
+
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    renderer.render( scene, camera );
+
+}
+
+
+
+function animate() {
+    requestAnimationFrame( animate );
+    // camera.position.x = Math.cos(performance.now() / 1900)*2;
+    // camera.position.y = Math.cos(performance.now() / 2100) + 3;
+    renderer.render( scene, camera );
+}
+</script>
+</html>
