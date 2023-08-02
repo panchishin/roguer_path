@@ -1,3 +1,5 @@
+willpower has a softmax, above which there is a loss.  Higher levels of willpower can modify dwarves, trolls, etc
+
 
 collect stuff
 	gold, mystery energy, exits
