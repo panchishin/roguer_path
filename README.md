@@ -19,7 +19,7 @@ Features include
  - Upgrades like automatic movement, possession of beasts
  - Zoom-in to tiles to show cave-like terrain
  - Combat info
- - Context info like detail deast data
+ - Context info like detail beast data
 
 ## Change history
 [2022-01-31]
