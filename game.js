@@ -379,7 +379,7 @@ export function Game() {
 						if (this.deaths==1) this.addAchievement("First death");
 						else this.addMessage("Death");
 						this.mazeSize = Math.max(5,this.mazeSize-1);
-						let old_deaths = deaths;
+						let old_deaths = this.deaths;
 						
 						this.tunnelVisionIn(()=>{this.reset(); this.deaths=old_deaths; this.start();});
 					}
