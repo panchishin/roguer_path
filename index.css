@@ -75,7 +75,7 @@ fieldset > legend {
 
 
 .maze {
-    line-height: 1.1;
+    line-height: 0.9rem;
     letter-spacing: .3rem;
     background-color: #1e1e1e;
     color: lawngreen;

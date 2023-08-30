@@ -12,10 +12,15 @@ body {
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js'
 
 
-var camera, scene, renderer;
+let camera, scene, renderer;
 
 init();
+addObjects(scene);
 animate();
+
+let scriptA = `
+
+`;
 
 function init() {
 
@@ -25,13 +30,12 @@ function init() {
     const height = 8*Math.max(window.innerHeight,window.innerWidth)/window.innerWidth;
     const aspect = window.innerHeight / window.innerWidth;
     camera = new THREE.OrthographicCamera( -width, width, height, -height, -10, 10 );
-    // camera.rotation.x = - Math.PI * 0.35;
-    // camera.rotation.z = - Math.PI * 0.0;
+    camera.lookAt( 0,0,-1 );
 
     scene = new THREE.Scene();
 
     var directionalLight = new THREE.DirectionalLight( 0x77ffff, 0.5 );
-    directionalLight.position.set(3,10,3);
+    directionalLight.position.set(3,3,10);
     directionalLight.castShadow = true;
 
     //Set up shadow properties for the light
@@ -52,30 +56,6 @@ function init() {
     var light = new THREE.AmbientLight( 0x403050 ); // soft white light
     scene.add( light );
 
-
-    let geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    let material = new THREE.MeshStandardMaterial( { color: 0x918E85 } );
-
-    for(let x = -5; x <=5; x+= 2) for(let z = -5; z <=5; z+= 2) {
-
-        let mesh = new THREE.Mesh( geometry, material );
-        scene.add( mesh );
-        mesh.position.set(x,0,z);
-        mesh.castShadow = true;
-    }
-
-    geometry = new THREE.BoxGeometry( 14, 1, 14 );
-
-    material = new THREE.MeshStandardMaterial( { color: 0x9b7653 } );
-    let mesh = new THREE.Mesh( geometry, material );
-
-
-    scene.add( mesh );
-    mesh.position.y += -1;
-    //mesh.position.z = -6;
-    mesh.receiveShadow = true;
-    camera.lookAt( mesh.position );
-
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
@@ -84,16 +64,52 @@ function init() {
     document.body.appendChild( renderer.domElement );
 
     renderer.render( scene, camera );
-
 }
 
+function addObjects(scene) {
+    let geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    let material = new THREE.MeshStandardMaterial( { color: 0x918E85 } );
+
+    for(let x = -5; x <=5; x+= 2) for(let y = -5; y <=5; y+= 2) {
+
+        let mesh = new THREE.Mesh( geometry, material );
+        mesh.position.set(x,y,0);
+        mesh.castShadow = true;
+        scene.add( mesh );
+    }
+
+    geometry = new THREE.BoxGeometry( 14, 14, 1 );
+
+    material = new THREE.MeshStandardMaterial( { color: 0x53769b } );
+    let mesh = new THREE.Mesh( geometry, material );
+
+
+    mesh.position.z = -1;
+    mesh.receiveShadow = true;
+
+    scene.add( mesh );    
+}
 
 
 function animate() {
     requestAnimationFrame( animate );
-    // camera.position.x = Math.cos(performance.now() / 1900)*2;
-    // camera.position.y = Math.cos(performance.now() / 2100) + 3;
+    //camera.position.x = Math.cos(performance.now() / 1900)*2;
+    //camera.position.y = Math.cos(performance.now() / 2100) + 3;
     renderer.render( scene, camera );
 }
+
+document.onkeydown = (e) => {
+    if (e.code == 'KeyD') camera.position.x += .1;
+    if (e.code == 'KeyA') camera.position.x -= .1;
+};
+
+// prevent window from scrolling when using the arrow functions
+window.addEventListener("keydown", function(e) {
+	if (e.code in actions) {
+		e.preventDefault();
+	}
+}, false);
+
+
 </script>
 </html>
