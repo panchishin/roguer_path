@@ -24,22 +24,20 @@ const tilemap = [6, 0, 22, 8, 8, 21, 1, 5, 0, 22,
 ;
 
 const animations = {
-        1: [[1, 2, 3, 4], 5],
-        8: [[8, 9, 10, 11], 5],
-        15: [[15, 16, 17, 18], 5],
-        22: [[22, 23], 40]
+        1: [[1, 2, 3, 4], 10],
+        8: [[8, 9, 10, 11], 10],
+        15: [[15, 16, 17, 18], 10],
+        22: [[22, 23], 80]
     };
-const fps = 24;
+const fps = 60;
 const tile_size = 16;
 
 const cols = 8; // amount of columns
 const rows = 3;  // amount of rows
 const totalSprites = cols*rows; // amount of images of sprite sheet
 
-let frame = -1;
+let last_frame = -1;
 
-init();
-animate();
 
 function init() {
 
@@ -90,12 +88,15 @@ function animate() {
 
     if ( textures ) {
 		
-        const frames = clock.getElapsedTime() * fps;
-        if (frames != frame) {
+        const frame = Math.floor(clock.getElapsedTime() * fps);
+        if (true || frame != last_frame) {
+            let updated = false;
     
             for (let i of Object.keys(animations)) {
                 const [animation, timeStep] = animations[i];
-                const step = Math.floor(frames / timeStep) % animation.length;
+                const step = Math.floor(frame / timeStep) % animation.length;
+                const prev_step = Math.floor((frame-1) / timeStep) % animation.length;
+                updated = updated || (step != prev_step);
                 const imageIndex = animation[step];
 
                 let col = ( imageIndex % cols ) / cols;
@@ -104,14 +105,17 @@ function animate() {
         		textures[i].offset.x =	col;
         		textures[i].offset.y = row;
             }
-            renderer.render( scene, camera );
-            frame = frames;
+            if (updated) { renderer.render( scene, camera ); }
+            last_frame = frame;
         }
     }
     
     requestAnimationFrame( animate );
 
 }
+
+init();
+requestAnimationFrame( animate );
 
 </script>
 </body>
