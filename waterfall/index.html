@@ -2,7 +2,13 @@
 <head>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 </head>
-<style>body {margin: 0; background-color: black}</style>
+<style>
+body {
+    margin: 0; 
+    background-color: rgb(81, 204, 223);
+    overflow: hidden;
+}
+</style>
 
 <body>
 <script src="https://threejs.org/build/three.min.js"></script>
@@ -40,10 +46,18 @@ let last_frame = -1;
 
 
 function init() {
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    function setRenderSize() {
+        const width = Math.floor(window.innerWidth/32 + 1)*16;
+        const height = Math.floor(window.innerHeight/32 + 1)*16;
+        renderer.setSize( width*2, height*2 );
+        camera = new THREE.OrthographicCamera( 0, width, height, 0, -1, 1 );
+    }
+    setRenderSize();
+    window.addEventListener("resize", setRenderSize);
 
-    const width = 640;
-    const height = 320;
-    camera = new THREE.OrthographicCamera( 0, width, height, 0, -1, 1 );
+    document.body.appendChild( renderer.domElement );
+
 
     scene = new THREE.Scene();
 
@@ -69,19 +83,16 @@ function init() {
     }
 
     const size = 16;
-    for (let x=0; x<40; x++) {
-        for (let y=0; y<20; y++) {
+    for (let x=0; x<60; x++) {
+        for (let y=0; y<40; y++) {
             const geometry = new THREE.PlaneGeometry( size, size );
-            const imageIndex = tilemap[x%10 + ((19-y)%10)*10];
+            const imageIndex = tilemap[x%10 + ((39-y)%10)*10];
             const material = new THREE.MeshBasicMaterial( { map: textures[imageIndex] } );
             let mesh = new THREE.Mesh( geometry, material );
             mesh.position.set((x+.5)*size,(y+.5)*size,0);
             scene.add( mesh );
         }
     }
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setSize( 1280, 640 );
-    document.body.appendChild( renderer.domElement );
 }
 
 function animate() {
