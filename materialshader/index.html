@@ -1,0 +1,87 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+</head>
+<style>
+    body {
+        margin: 0;
+        background-color: black
+    }
+</style>
+
+<body>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        uniform sampler2D texture1;
+        uniform float time;
+
+        varying vec2 vUv;
+
+        void main() {
+           vec4 r = texture2D(texture1, vUv);
+           float x = (r.r + r.g + r.b)/3.0;
+           float g = x < 0.01 ? 1.0 : x;
+           float a = fract(time*0.2);
+           gl_FragColor = vec4(x,g,1.0-g,1.) * a + vec4(r.r, r.g, r.b, 1.)*(1.0-a);
+        }
+    </script>
+
+    <script src="https://threejs.org/build/three.min.js"></script>
+
+    <script type='module'>
+
+        // Initialize WebGL Renderer
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild( renderer.domElement );
+
+        // Initialize Scenes
+        var scene = new THREE.Scene();
+
+        // Initialize Camera
+        const size = Math.min(window.innerHeight, window.innerWidth) * 2;
+        let camera = new THREE.OrthographicCamera( 0, window.innerWidth*2, window.innerHeight*2, 0, -1, 1 );
+
+        const shaderTime = {value:0};
+
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load('https://i.imgur.com/wucpG7e.png');
+
+        texture.magFilter = THREE.NearestFilter;
+    
+        var material = new THREE.ShaderMaterial({
+            uniforms: { 
+                texture1: { type: "t", value: texture } ,
+                time: shaderTime
+            },
+            vertexShader: document.getElementById('vertexShader').innerHTML,
+            fragmentShader: document.getElementById('fragmentShader').innerHTML
+        });
+        const tile = new THREE.Mesh(new THREE.PlaneGeometry(size*8/16, size*3/16), material);
+        scene.add(tile);
+
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            // Render the Scene
+            const t = clock.getElapsedTime();
+            shaderTime.value = t;
+
+            tile.position.set(Math.sin(t)*size/4 + size/2, size/2, 0);
+            renderer.render(scene, camera);
+        }
+        requestAnimationFrame(animate);
+
+    </script>
+</body>
+
+</html>

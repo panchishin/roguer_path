@@ -85,6 +85,7 @@ function init() {
 }
 
 function animate() {
+    requestAnimationFrame( animate );
 
     if ( textures ) {
 		
@@ -110,7 +111,6 @@ function animate() {
         }
     }
     
-    requestAnimationFrame( animate );
 
 }
 
